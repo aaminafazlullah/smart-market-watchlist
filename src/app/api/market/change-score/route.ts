@@ -6,6 +6,10 @@ import {
   calculateVolumeAnomalyScore,
   getRecentValues,
   calculateNewsImpactScore,
+  calculateEarningsImpactScore,
+  calculateChangeScore,
+  getChangeSeverity,
+  generateChangeReasons,
 } from "@/lib/change-score";
 
 export async function GET(request: NextRequest) {
@@ -21,13 +25,10 @@ export async function GET(request: NextRequest) {
   try {
     const baseUrl = request.nextUrl.origin;
 
-    const [quoteResponse, historyResponse, newsResponse] = await Promise.all([
+    const [quoteResponse, newsResponse] =
+  await Promise.all([
     fetch(
       `${baseUrl}/api/market/quote?symbol=${encodeURIComponent(symbol)}`,
-      { cache: "no-store" }
-    ),
-    fetch(
-      `${baseUrl}/api/market/history?symbol=${encodeURIComponent(symbol)}`,
       { cache: "no-store" }
     ),
     fetch(
@@ -36,8 +37,19 @@ export async function GET(request: NextRequest) {
     ),
   ]);
 
+const historyResponse = await fetch(
+  `${baseUrl}/api/market/history?symbol=${encodeURIComponent(symbol)}`,
+  { cache: "no-store" }
+);
+
+const earningsResponse = await fetch(
+  `${baseUrl}/api/market/events?symbol=${encodeURIComponent(symbol)}`,
+  { cache: "no-store" }
+);
+
     if (!quoteResponse.ok || !historyResponse.ok ||
-  !newsResponse.ok) {
+  !newsResponse.ok ||
+  !earningsResponse.ok) {
       return NextResponse.json(
         { error: "Failed to fetch market data" },
         { status: 502 }
@@ -47,6 +59,45 @@ export async function GET(request: NextRequest) {
     const quote = await quoteResponse.json();
     const history = await historyResponse.json();
     const newsData = await newsResponse.json();
+    const earningsData = await earningsResponse.json();
+    console.log("EARNINGS DATA:", earningsData);
+    const earnings = earningsData.earnings ?? [];
+
+let earningsImpactScore = 0;
+let daysUntilEarnings: number | null = null;
+
+if (earnings.length > 0) {
+  const nextEarnings = earnings[0];
+
+  if (nextEarnings?.reportDate) {
+    const [year, month, day] = nextEarnings.reportDate
+      .split("-")
+      .map(Number);
+
+    const earningsDate = new Date(
+      year,
+      month - 1,
+      day
+    );
+
+    const today = new Date();
+
+    const todayDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    daysUntilEarnings = Math.round(
+      (earningsDate.getTime() - todayDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+
+    earningsImpactScore =
+      calculateEarningsImpactScore(daysUntilEarnings);
+  }
+}
+
     const news = newsData.news ?? [];
     const recentNews = news.slice(0, 5);
     const prices = history.history.map(
@@ -82,11 +133,6 @@ export async function GET(request: NextRequest) {
     currentVolume,
     historicalVolumes
    );
-
-   const partialScore = Math.round(
-   priceAnomalyScore * 0.4 +
-   volumeAnomalyScore * 0.25
-   );
    const latestNewsTimestamp =
     recentNews.length > 0
     ? recentNews.reduce(
@@ -107,16 +153,47 @@ export async function GET(request: NextRequest) {
     recentNews.length,
     hoursSinceLatestNews
     );
-    return NextResponse.json({
-    symbol: quote.symbol,
-    currentPrice: quote.price,
-    changePercent: quote.changePercent,
-    historicalVolatility: Number(volatility.toFixed(2)),
+    const changeScore = calculateChangeScore(
     priceAnomalyScore,
     volumeAnomalyScore,
     newsImpactScore,
-    newsCount: recentNews.length,
-  });
+    earningsImpactScore
+  );
+
+    const severity = getChangeSeverity(changeScore);
+
+    const reasons = generateChangeReasons(
+     priceAnomalyScore,
+     volumeAnomalyScore,
+     newsImpactScore,
+     earningsImpactScore
+    );
+    return NextResponse.json({
+  symbol: quote.symbol,
+  currentPrice: quote.price,
+  changePercent: quote.changePercent,
+
+  changeScore,
+  severity,
+  reasons,
+
+  signals: {
+    price: priceAnomalyScore,
+    volume: volumeAnomalyScore,
+    news: newsImpactScore,
+    earnings: earningsImpactScore,
+  },
+
+  historicalVolatility: Number(
+    volatility.toFixed(2)
+  ),
+
+  newsCount: recentNews.length,
+  daysUntilEarnings:
+    daysUntilEarnings !== null
+      ? Number(daysUntilEarnings.toFixed(1))
+      : null,
+});
   } catch {
     return NextResponse.json(
       { error: "Unable to calculate change score" },

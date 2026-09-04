@@ -40,7 +40,19 @@ export async function GET(request: NextRequest) {
     }
 
     const csvText = await response.text();
-
+    if (
+  csvText.includes("Thank you for using Alpha Vantage") ||
+  csvText.includes("API call frequency") ||
+  csvText.includes("rate limit")
+) {
+  return NextResponse.json(
+    {
+      error: "Alpha Vantage API limit reached",
+      details: csvText,
+    },
+    { status: 429 }
+  );
+}
     const lines = csvText
       .trim()
       .split("\n")
@@ -55,26 +67,33 @@ export async function GET(request: NextRequest) {
 
     const headers = lines[0].split(",");
 
-    const earnings = lines.slice(1).map((line) => {
-      const values = line.split(",");
+    const earnings = lines
+  .slice(1)
+  .map((line) => {
+    const values = line.split(",");
 
-      const record: Record<string, string> = {};
+    const record: Record<string, string> = {};
 
-      headers.forEach((header, index) => {
-        record[header] = values[index] ?? "";
-      });
-
-      return {
-        symbol: record.symbol,
-        reportDate: record.reportDate,
-        fiscalDateEnding: record.fiscalDateEnding,
-        estimate: record.estimate
-          ? Number(record.estimate)
-          : null,
-        currency: record.currency,
-        timeOfTheDay: record.timeOfTheDay,
-      };
+    headers.forEach((header, index) => {
+      record[header] = values[index] ?? "";
     });
+
+    return {
+      symbol: record.symbol,
+      reportDate: record.reportDate,
+      fiscalDateEnding: record.fiscalDateEnding,
+      estimate: record.estimate
+        ? Number(record.estimate)
+        : null,
+      currency: record.currency,
+      timeOfTheDay: record.timeOfTheDay,
+    };
+  })
+  .filter(
+    (event) =>
+      event.symbol === symbol.toUpperCase() &&
+      /^\d{4}-\d{2}-\d{2}$/.test(event.reportDate)
+  );
 
     return NextResponse.json({
       symbol: symbol.toUpperCase(),

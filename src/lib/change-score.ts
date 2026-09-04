@@ -149,3 +149,88 @@ export function calculateEarningsImpactScore(
 
   return 0;
 }
+export function calculateChangeScore(
+  priceScore: number,
+  volumeScore: number,
+  newsScore: number,
+  earningsScore: number
+): number {
+  const score =
+    priceScore * 0.4 +
+    volumeScore * 0.25 +
+    newsScore * 0.2 +
+    earningsScore * 0.15;
+
+  return Math.round(Math.min(Math.max(score, 0), 100));
+}
+export function getChangeSeverity(
+  score: number
+): "low" | "medium" | "high" | "critical" {
+  if (score >= 80) {
+    return "critical";
+  }
+
+  if (score >= 60) {
+    return "high";
+  }
+
+  if (score >= 30) {
+    return "medium";
+  }
+
+  return "low";
+}
+export function generateChangeReasons(
+  priceScore: number,
+  volumeScore: number,
+  newsScore: number,
+  earningsScore: number
+): string[] {
+  const reasons: string[] = [];
+
+  if (priceScore >= 70) {
+    reasons.push(
+      "Price movement is unusually large compared with recent volatility"
+    );
+  } else if (priceScore >= 40) {
+    reasons.push(
+      "Price movement is noticeable compared with recent volatility"
+    );
+  }
+
+  if (volumeScore >= 70) {
+    reasons.push(
+      "Trading volume is significantly higher than normal"
+    );
+  } else if (volumeScore >= 40) {
+    reasons.push(
+      "Trading volume is elevated compared with normal activity"
+    );
+  }
+
+  if (newsScore >= 70) {
+    reasons.push(
+      "Recent news activity is elevated"
+    );
+  } else if (newsScore >= 40) {
+    reasons.push(
+      "Recent news activity may be contributing to the change"
+    );
+  }
+
+  if (earningsScore >= 70) {
+    reasons.push(
+      "An earnings event is approaching"
+    );
+  } else if (earningsScore >= 30) {
+    reasons.push(
+      "An upcoming earnings event may be relevant"
+    );
+  }
+
+  if (reasons.length === 0) {
+    reasons.push("No major changes detected");
+  }
+
+  return reasons;
+}

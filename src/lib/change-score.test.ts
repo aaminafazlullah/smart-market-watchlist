@@ -8,6 +8,9 @@ import {
   getRecentValues,
   calculateNewsImpactScore,
   calculateEarningsImpactScore,
+  calculateChangeScore,
+  getChangeSeverity,
+  generateChangeReasons,
 } from "./change-score";
 
 describe("Change Score calculations", () => {
@@ -140,5 +143,60 @@ test("past earnings gets zero impact", () => {
   const score = calculateEarningsImpactScore(-1);
 
   expect(score).toBe(0);
+});
+test("calculates weighted change score", () => {
+  const score = calculateChangeScore(
+    100,
+    80,
+    60,
+    40
+  );
+
+  expect(score).toBe(78);
+});
+
+test("classifies change score severity", () => {
+  expect(getChangeSeverity(20)).toBe("low");
+  expect(getChangeSeverity(45)).toBe("medium");
+  expect(getChangeSeverity(65)).toBe("high");
+  expect(getChangeSeverity(90)).toBe("critical");
+});
+
+test("generates reasons for significant changes", () => {
+  const reasons = generateChangeReasons(
+    80,
+    50,
+    75,
+    90
+  );
+
+  expect(reasons).toContain(
+    "Price movement is unusually large compared with recent volatility"
+  );
+
+  expect(reasons).toContain(
+    "Trading volume is elevated compared with normal activity"
+  );
+
+  expect(reasons).toContain(
+    "Recent news activity is elevated"
+  );
+
+  expect(reasons).toContain(
+    "An earnings event is approaching"
+  );
+});
+
+test("returns default reason when there are no major signals", () => {
+  const reasons = generateChangeReasons(
+    10,
+    10,
+    10,
+    10
+  );
+
+  expect(reasons).toEqual([
+    "No major changes detected",
+  ]);
 });
 });

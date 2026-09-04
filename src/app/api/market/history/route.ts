@@ -67,6 +67,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Historical data unavailable",
+          alphaVantageResponse: data,
         },
         { status: 502 }
       );
