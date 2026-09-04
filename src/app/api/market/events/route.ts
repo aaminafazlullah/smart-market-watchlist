@@ -41,9 +41,44 @@ export async function GET(request: NextRequest) {
 
     const csvText = await response.text();
 
+    const lines = csvText
+      .trim()
+      .split("\n")
+      .filter(Boolean);
+
+    if (lines.length <= 1) {
+      return NextResponse.json({
+        symbol: symbol.toUpperCase(),
+        earnings: [],
+      });
+    }
+
+    const headers = lines[0].split(",");
+
+    const earnings = lines.slice(1).map((line) => {
+      const values = line.split(",");
+
+      const record: Record<string, string> = {};
+
+      headers.forEach((header, index) => {
+        record[header] = values[index] ?? "";
+      });
+
+      return {
+        symbol: record.symbol,
+        reportDate: record.reportDate,
+        fiscalDateEnding: record.fiscalDateEnding,
+        estimate: record.estimate
+          ? Number(record.estimate)
+          : null,
+        currency: record.currency,
+        timeOfTheDay: record.timeOfTheDay,
+      };
+    });
+
     return NextResponse.json({
       symbol: symbol.toUpperCase(),
-      earningsCsv: csvText,
+      earnings,
     });
   } catch {
     return NextResponse.json(
