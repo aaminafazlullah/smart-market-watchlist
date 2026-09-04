@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  getCachedHistory,
+  saveHistoryToCache,
+} from "@/lib/market-cache";
+import { getFallbackHistory } from "@/lib/market-fallback";
 
 export async function GET(request: NextRequest) {
   const symbol = request.nextUrl.searchParams.get("symbol");
@@ -10,98 +15,92 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const normalizedSymbol = symbol.toUpperCase();
+
+  // 1. Try the cache first.
+  try {
+    const cachedHistory = await getCachedHistory(normalizedSymbol);
+
+    if (cachedHistory) {
+      return NextResponse.json({
+        symbol: normalizedSymbol,
+        history: cachedHistory,
+        source: "cache",
+        degraded: false,
+      });
+    }
+  } catch (error) {
+    console.error("Cache read failed:", error);
+  }
+
   const apiKey = process.env.ALPHA_VANTAGE_API_KEY;
 
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: "Alpha Vantage API key is not configured" },
-      { status: 500 }
-    );
+  // 2. If there is no usable cache, try Alpha Vantage.
+  if (apiKey) {
+    try {
+      const response = await fetch(
+        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${encodeURIComponent(
+          normalizedSymbol
+        )}&outputsize=compact&apikey=${apiKey}`,
+        {
+          cache: "no-store",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        const timeSeries = data["Time Series (Daily)"];
+
+        if (timeSeries && !data["Error Message"] && !data["Note"]) {
+          const history = Object.entries(timeSeries).map(
+            ([date, values]) => {
+              const daily = values as {
+                "1. open": string;
+                "2. high": string;
+                "3. low": string;
+                "4. close": string;
+                "5. volume": string;
+              };
+
+              return {
+                date,
+                open: Number(daily["1. open"]),
+                high: Number(daily["2. high"]),
+                low: Number(daily["3. low"]),
+                close: Number(daily["4. close"]),
+                volume: Number(daily["5. volume"]),
+              };
+            }
+          );
+
+          // 3. Save successful provider data to the cache.
+          await saveHistoryToCache(
+            normalizedSymbol,
+            history
+          );
+
+          return NextResponse.json({
+            symbol: normalizedSymbol,
+            history,
+            source: "live",
+            degraded: false,
+          });
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Alpha Vantage history request failed:",
+        error
+      );
+    }
   }
 
-  try {
-    const response = await fetch(
-      `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${encodeURIComponent(
-        symbol
-      )}&outputsize=compact&apikey=${apiKey}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!response.ok) {
-      return NextResponse.json(
-        {
-          error: "Alpha Vantage historical data request failed",
-          status: response.status,
-        },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-
-    if (data["Error Message"]) {
-      return NextResponse.json(
-        {
-          error: "Invalid symbol or Alpha Vantage request",
-          details: data["Error Message"],
-        },
-        { status: 400 }
-      );
-    }
-
-    if (data["Note"]) {
-      return NextResponse.json(
-        {
-          error: "Alpha Vantage API limit reached",
-          details: data["Note"],
-        },
-        { status: 429 }
-      );
-    }
-
-    const timeSeries = data["Time Series (Daily)"];
-
-    if (!timeSeries) {
-      return NextResponse.json(
-        {
-          error: "Historical data unavailable",
-          alphaVantageResponse: data,
-        },
-        { status: 502 }
-      );
-    }
-
-    const history = Object.entries(timeSeries).map(
-      ([date, values]) => {
-        const daily = values as {
-          "1. open": string;
-          "2. high": string;
-          "3. low": string;
-          "4. close": string;
-          "5. volume": string;
-        };
-
-        return {
-          date,
-          open: Number(daily["1. open"]),
-          high: Number(daily["2. high"]),
-          low: Number(daily["3. low"]),
-          close: Number(daily["4. close"]),
-          volume: Number(daily["5. volume"]),
-        };
-      }
-    );
-
-    return NextResponse.json({
-      symbol: symbol.toUpperCase(),
-      history,
-    });
-  } catch {
-    return NextResponse.json(
-      { error: "Unable to connect to Alpha Vantage" },
-      { status: 500 }
-    );
-  }
+  // 4. Last resort: deterministic fallback.
+  return NextResponse.json({
+    symbol: normalizedSymbol,
+    history: getFallbackHistory(normalizedSymbol),
+    source: "fallback",
+    degraded: true,
+  });
 }
