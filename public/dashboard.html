@@ -270,7 +270,7 @@
 <span>Threshold: 80+ Score</span>
 </button>
 <!-- Refresh Delta Button (Primary Action) -->
-<button class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/50 hover:shadow-[0_0_12px_rgba(0,210,255,0.3)] text-xs font-title-md transition-all active:opacity-80">
+<button id="sync-now-btn" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/50 hover:shadow-[0_0_12px_rgba(0,210,255,0.3)] text-xs font-title-md transition-all active:opacity-80">
 <span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
 <span class="font-semibold">Sync Now</span>
 </button>
@@ -305,7 +305,7 @@
               Your market, without the noise.
             </h1>
 <p class="text-body-md font-body-md text-on-surface-variant mt-0.5">
-<span class="text-primary font-semibold">3 meaningful anomalies</span> detected across your sovereign portfolio since you logged off.
+<span id="meaningful-change-count" class="text-primary font-semibold">0 meaningful changes</span> detected across your watchlist since you last checked.
             </p>
 </div>
 <!-- Micro Quick Filter or Timeline Jump -->
@@ -317,188 +317,11 @@
 </div>
 </div>
 </div>
-<!-- 3 Feature Anomaly Cards (Bento Matrix) -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter-panel">
-<!-- CARD 1: AAPL (CRITICAL - Score 82) -->
-<div class="glass-panel-interactive specular-rim-rose rounded-xl p-space-md flex flex-col justify-between relative overflow-hidden group">
-<div class="space-y-3.5">
-<!-- Card Header -->
-<div class="flex items-start justify-between">
-<div class="flex items-center gap-2.5">
-<div class="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-bold text-base text-on-surface">
-                    
-                  </div>
-<div>
-<div class="flex items-center gap-1.5">
-<span class="font-headline-sm text-sm font-semibold text-on-surface">AAPL</span>
-<span class="text-body-md text-xs text-on-surface-variant">Apple Inc.</span>
-</div>
-<div class="flex items-center gap-2 mt-0.5">
-<span class="text-data-display-sm font-data-display-sm font-semibold text-on-surface">$319.97</span>
-<span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-label-code font-label-code text-xs bg-error/10 border border-error/25 text-error">
-                        ▼ -2.51%
-                      </span>
-</div>
-</div>
-</div>
-<!-- Circular SVG Gauge 82 (CRITICAL) -->
-<div class="flex flex-col items-center">
-<div class="relative w-12 h-12 flex items-center justify-center">
-<svg class="w-12 h-12 -rotate-90" viewbox="0 0 44 44">
-<circle cx="22" cy="22" fill="none" r="18" stroke="rgba(255,255,255,0.08)" stroke-width="3"></circle>
-<circle cx="22" cy="22" fill="none" r="18" stroke="#ffb4ab" stroke-dasharray="113.1" stroke-dashoffset="20.3" stroke-linecap="round" stroke-width="3.2"></circle>
-</svg>
-<span class="absolute text-label-code font-label-code font-bold text-xs text-error">82</span>
-</div>
-<span class="text-label-caps font-label-caps tracking-widest text-[9px] font-bold text-error mt-0.5 animate-pulse">CRITICAL</span>
-</div>
-</div>
-<!-- Timestamp & Separation -->
-<div class="flex items-center justify-between py-1 px-2 rounded bg-surface-container-lowest/80 border border-outline-variant/20">
-<span class="text-label-code font-label-code text-[11px] text-on-surface-variant">Anomaly Trigger:</span>
-<span class="text-label-code font-label-code text-[11px] text-primary">1h 18m ago (11:38 AM)</span>
-</div>
-<!-- Anomaly Drivers Bullet Points -->
-<div class="space-y-2 pt-1">
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-error font-medium">Vol Divergence:</span> Unusual volume spike <span class="font-label-code text-on-surface font-semibold bg-surface-container px-1 rounded">3.8x</span> 30-day midday baseline.
-                </div>
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-error font-medium">Supply Chain Delta:</span> Unscheduled executive statement on Foxconn sub-assembly assembly calendar.
-                </div>
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-error font-medium">Dark Pools:</span> Block sell order of <span class="font-label-code text-on-surface font-semibold bg-surface-container px-1 rounded">1.4M shares</span> filled at $320.10.
-                </div>
-</div>
-</div>
-<!-- Footer Card Metrics -->
-<div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-label-code font-label-code text-[11px]">
-<span class="text-outline">Confidence: 96.4%</span>
-<button class="text-primary hover:underline inline-flex items-center gap-0.5">
-                Inspect Tape <span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
-</button>
-</div>
-</div>
-<!-- CARD 2: NVDA (HIGH - Score 78) -->
-<div class="glass-panel-interactive specular-rim-cyan rounded-xl p-space-md flex flex-col justify-between relative overflow-hidden group">
-<div class="space-y-3.5">
-<!-- Card Header -->
-<div class="flex items-start justify-between">
-<div class="flex items-center gap-2.5">
-<div class="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-bold text-sm text-secondary font-label-code">
-                    NV
-                  </div>
-<div>
-<div class="flex items-center gap-1.5">
-<span class="font-headline-sm text-sm font-semibold text-on-surface">NVDA</span>
-<span class="text-body-md text-xs text-on-surface-variant">Nvidia Corp</span>
-</div>
-<div class="flex items-center gap-2 mt-0.5">
-<span class="text-data-display-sm font-data-display-sm font-semibold text-on-surface">$894.12</span>
-<span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-label-code font-label-code text-xs bg-secondary/10 border border-secondary/30 text-secondary">
-                        ▲ +4.82%
-                      </span>
-</div>
-</div>
-</div>
-<!-- Circular SVG Gauge 78 (HIGH) -->
-<div class="flex flex-col items-center">
-<div class="relative w-12 h-12 flex items-center justify-center">
-<svg class="w-12 h-12 -rotate-90" viewbox="0 0 44 44">
-<circle cx="22" cy="22" fill="none" r="18" stroke="rgba(255,255,255,0.08)" stroke-width="3"></circle>
-<circle cx="22" cy="22" fill="none" r="18" stroke="#00d2ff" stroke-dasharray="113.1" stroke-dashoffset="24.8" stroke-linecap="round" stroke-width="3.2"></circle>
-</svg>
-<span class="absolute text-label-code font-label-code font-bold text-xs text-primary">78</span>
-</div>
-<span class="text-label-caps font-label-caps tracking-widest text-[9px] font-bold text-primary mt-0.5">HIGH</span>
-</div>
-</div>
-<!-- Timestamp & Separation -->
-<div class="flex items-center justify-between py-1 px-2 rounded bg-surface-container-lowest/80 border border-outline-variant/20">
-<span class="text-label-code font-label-code text-[11px] text-on-surface-variant">Anomaly Trigger:</span>
-<span class="text-label-code font-label-code text-[11px] text-primary">46m ago (12:10 PM)</span>
-</div>
-<!-- Anomaly Drivers Bullet Points -->
-<div class="space-y-2 pt-1">
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-primary font-medium">Procurement Leak:</span> Hyperscaler memorandum indicates <span class="font-label-code text-on-surface font-semibold bg-surface-container px-1 rounded">+35%</span> accelerated H200 chips.
-                </div>
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-primary font-medium">Volatility Skew:</span> IV structure shifted sharply toward out-of-the-money 950C contracts.
-                </div>
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-primary font-medium">Consensus Velocity:</span> Social &amp; analyst momentum surged <span class="font-label-code text-on-surface font-semibold bg-surface-container px-1 rounded">+240%</span> in under 90 minutes.
-                </div>
-</div>
-</div>
-<!-- Footer Card Metrics -->
-<div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-label-code font-label-code text-[11px]">
-<span class="text-outline">Confidence: 94.1%</span>
-<button class="text-primary hover:underline inline-flex items-center gap-0.5">
-                Inspect Tape <span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
-</button>
-</div>
-</div>
-<!-- CARD 3: TSLA (HIGH - Score 74) -->
-<div class="glass-panel-interactive specular-rim-rose rounded-xl p-space-md flex flex-col justify-between relative overflow-hidden group">
-<div class="space-y-3.5">
-<!-- Card Header -->
-<div class="flex items-start justify-between">
-<div class="flex items-center gap-2.5">
-<div class="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-bold text-sm text-on-surface font-headline-sm">
-                    T
-                  </div>
-<div>
-<div class="flex items-center gap-1.5">
-<span class="font-headline-sm text-sm font-semibold text-on-surface">TSLA</span>
-<span class="text-body-md text-xs text-on-surface-variant">Tesla Inc.</span>
-</div>
-<div class="flex items-center gap-2 mt-0.5">
-<span class="text-data-display-sm font-data-display-sm font-semibold text-on-surface">$178.40</span>
-<span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-label-code font-label-code text-xs bg-error/10 border border-error/25 text-error">
-                        ▼ -3.15%
-                      </span>
-</div>
-</div>
-</div>
-<!-- Circular SVG Gauge 74 (HIGH) -->
-<div class="flex flex-col items-center">
-<div class="relative w-12 h-12 flex items-center justify-center">
-<svg class="w-12 h-12 -rotate-90" viewbox="0 0 44 44">
-<circle cx="22" cy="22" fill="none" r="18" stroke="rgba(255,255,255,0.08)" stroke-width="3"></circle>
-<circle cx="22" cy="22" fill="none" r="18" stroke="#ffb4ab" stroke-dasharray="113.1" stroke-dashoffset="29.4" stroke-linecap="round" stroke-width="3.2"></circle>
-</svg>
-<span class="absolute text-label-code font-label-code font-bold text-xs text-error">74</span>
-</div>
-<span class="text-label-caps font-label-caps tracking-widest text-[9px] font-bold text-error mt-0.5">HIGH</span>
-</div>
-</div>
-<!-- Timestamp & Separation -->
-<div class="flex items-center justify-between py-1 px-2 rounded bg-surface-container-lowest/80 border border-outline-variant/20">
-<span class="text-label-code font-label-code text-[11px] text-on-surface-variant">Anomaly Trigger:</span>
-<span class="text-label-code font-label-code text-[11px] text-primary">2h 02m ago (10:54 AM)</span>
-</div>
-<!-- Anomaly Drivers Bullet Points -->
-<div class="space-y-2 pt-1">
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-error font-medium">EU Regulatory:</span> New filing regarding Autopilot radar hardware redundancies published.
-                </div>
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-error font-medium">Brokerage Revisions:</span> Delivery forecast downgraded by <span class="font-label-code text-on-surface font-semibold bg-surface-container px-1 rounded">4 major firms</span> in 30 min window.
-                </div>
-<div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-<span class="text-error font-medium">OI Support Breach:</span> Critical put wall failure beneath <span class="font-label-code text-on-surface font-semibold bg-surface-container px-1 rounded">$180.00</span> strike.
-                </div>
-</div>
-</div>
-<!-- Footer Card Metrics -->
-<div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-label-code font-label-code text-[11px]">
-<span class="text-outline">Confidence: 91.8%</span>
-<button class="text-primary hover:underline inline-flex items-center gap-0.5">
-                Inspect Tape <span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
-</button>
-</div>
-</div>
+<!-- 3 Feature Anomaly Cards (Dynamic) -->
+<div id="since-you-left-cards" class="grid grid-cols-1 lg:grid-cols-3 gap-gutter-panel">
+  <div class="lg:col-span-3 glass-panel rounded-xl p-8 text-center text-outline">
+    Loading your latest market changes...
+  </div>
 </div>
 </section>
 <!-- ================= SECTION 2: DELTA TIMELINE ================= -->
@@ -581,7 +404,7 @@
 <div class="flex items-center gap-3">
 <h2 class="text-title-md font-title-md font-semibold text-on-surface">Monitored Assets</h2>
 <span class="text-label-code font-label-code px-2 py-0.5 rounded bg-surface-container-high text-primary border border-outline-variant/30 text-xs">
-              14 Assets Monitored
+              0 Assets Monitored
             </span>
 </div>
 <!-- Watchlist Actions & Category Filters -->
@@ -618,387 +441,761 @@
 </tr>
 </thead>
 <tbody class="divide-y divide-outline-variant/10 text-body-md text-xs">
-<!-- Row 1: MSFT -->
-<tr class="hover:bg-surface-container-high/20 transition-colors group">
-<td class="py-3 px-3">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center font-label-code text-[10px] text-on-surface font-semibold">MS</span>
-<div>
-<span class="font-semibold text-on-surface block leading-none">MSFT</span>
-<span class="text-[10px] text-outline">Microsoft Corp.</span>
-</div>
-</div>
-</td>
-<td class="py-3 px-3 text-right font-label-code font-semibold text-on-surface">$428.50</td>
-<td class="py-3 px-3 text-right">
-<span class="inline-flex items-center text-secondary font-label-code text-[11px]">
-                    ▲ +0.64%
-                  </span>
-</td>
-<td class="py-3 px-3 text-center">
-<!-- Green Sparkline SVG -->
-<svg class="w-24 h-5 mx-auto overflow-visible" viewbox="0 0 80 20">
-<polyline fill="none" points="0,15 15,14 30,16 45,10 60,11 75,5 80,4" stroke="#4edea3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-</svg>
-</td>
-<td class="py-3 px-3 text-center">
-<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-outline border border-outline-variant/30 text-label-code">
-<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
-<span>24 LOW</span>
-</div>
-</td>
-<td class="py-3 px-3 text-on-surface-variant">
-<span class="text-on-surface font-medium">2 minor events:</span> Azure hybrid cloud patch notes &amp; neutral options expiry rollover.
-                </td>
-<td class="py-3 px-3 text-right">
-<button class="p-1 rounded text-outline hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
-</button>
-</td>
-</tr>
-<!-- Row 2: AMZN -->
-<tr class="hover:bg-surface-container-high/20 transition-colors group">
-<td class="py-3 px-3">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center font-label-code text-[10px] text-on-surface font-semibold">AZ</span>
-<div>
-<span class="font-semibold text-on-surface block leading-none">AMZN</span>
-<span class="text-[10px] text-outline">Amazon.com Inc.</span>
-</div>
-</div>
-</td>
-<td class="py-3 px-3 text-right font-label-code font-semibold text-on-surface">$186.20</td>
-<td class="py-3 px-3 text-right">
-<span class="inline-flex items-center text-secondary font-label-code text-[11px]">
-                    ▲ +1.15%
-                  </span>
-</td>
-<td class="py-3 px-3 text-center">
-<svg class="w-24 h-5 mx-auto overflow-visible" viewbox="0 0 80 20">
-<polyline fill="none" points="0,17 20,15 35,12 50,14 65,8 80,6" stroke="#4edea3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-</svg>
-</td>
-<td class="py-3 px-3 text-center">
-<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-on-surface-variant border border-outline-variant/30 text-label-code">
-<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-<span>42 MED</span>
-</div>
-</td>
-<td class="py-3 px-3 text-on-surface-variant">
-<span class="text-on-surface font-medium">1 volume surge:</span> Midday fulfillment infrastructure bond issuance announcement.
-                </td>
-<td class="py-3 px-3 text-right">
-<button class="p-1 rounded text-outline hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
-</button>
-</td>
-</tr>
-<!-- Row 3: GOOGL -->
-<tr class="hover:bg-surface-container-high/20 transition-colors group">
-<td class="py-3 px-3">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center font-label-code text-[10px] text-on-surface font-semibold">GG</span>
-<div>
-<span class="font-semibold text-on-surface block leading-none">GOOGL</span>
-<span class="text-[10px] text-outline">Alphabet Inc.</span>
-</div>
-</div>
-</td>
-<td class="py-3 px-3 text-right font-label-code font-semibold text-on-surface">$172.90</td>
-<td class="py-3 px-3 text-right">
-<span class="inline-flex items-center text-error font-label-code text-[11px]">
-                    ▼ -0.42%
-                  </span>
-</td>
-<td class="py-3 px-3 text-center">
-<svg class="w-24 h-5 mx-auto overflow-visible" viewbox="0 0 80 20">
-<polyline fill="none" points="0,5 20,8 40,7 55,14 70,12 80,16" stroke="#ffb4ab" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-</svg>
-</td>
-<td class="py-3 px-3 text-center">
-<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-outline border border-outline-variant/30 text-label-code">
-<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
-<span>31 LOW</span>
-</div>
-</td>
-<td class="py-3 px-3 text-on-surface-variant">
-                  Quiet baseline variance; spread metrics tracking within standard 2σ deviations.
-                </td>
-<td class="py-3 px-3 text-right">
-<button class="p-1 rounded text-outline hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
-</button>
-</td>
-</tr>
-<!-- Row 4: META -->
-<tr class="hover:bg-surface-container-high/20 transition-colors group">
-<td class="py-3 px-3">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center font-label-code text-[10px] text-primary font-semibold">ME</span>
-<div>
-<span class="font-semibold text-on-surface block leading-none">META</span>
-<span class="text-[10px] text-outline">Meta Platforms</span>
-</div>
-</div>
-</td>
-<td class="py-3 px-3 text-right font-label-code font-semibold text-on-surface">$504.10</td>
-<td class="py-3 px-3 text-right">
-<span class="inline-flex items-center text-secondary font-label-code text-[11px]">
-                    ▲ +2.80%
-                  </span>
-</td>
-<td class="py-3 px-3 text-center">
-<svg class="w-24 h-5 mx-auto overflow-visible" viewbox="0 0 80 20">
-<polyline fill="none" points="0,18 20,14 40,15 60,6 75,7 80,3" stroke="#4edea3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-</svg>
-</td>
-<td class="py-3 px-3 text-center">
-<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-primary-container/15 text-primary border border-primary-container/30 text-label-code font-bold">
-<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
-<span>68 HIGH</span>
-</div>
-</td>
-<td class="py-3 px-3 text-on-surface-variant">
-<span class="text-primary font-medium">Policy shift:</span> Real-time AI ad delivery algorithm changes deployed across EMEA marketplace.
-                </td>
-<td class="py-3 px-3 text-right">
-<button class="p-1 rounded text-outline hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
-</button>
-</td>
-</tr>
-<!-- Row 5: AMD -->
-<tr class="hover:bg-surface-container-high/20 transition-colors group">
-<td class="py-3 px-3">
-<div class="flex items-center gap-2">
-<span class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center font-label-code text-[10px] text-primary font-semibold">AM</span>
-<div>
-<span class="font-semibold text-on-surface block leading-none">AMD</span>
-<span class="text-[10px] text-outline">Adv. Micro Devices</span>
-</div>
-</div>
-</td>
-<td class="py-3 px-3 text-right font-label-code font-semibold text-on-surface">$158.30</td>
-<td class="py-3 px-3 text-right">
-<span class="inline-flex items-center text-secondary font-label-code text-[11px]">
-                    ▲ +3.20%
-                  </span>
-</td>
-<td class="py-3 px-3 text-center">
-<svg class="w-24 h-5 mx-auto overflow-visible" viewbox="0 0 80 20">
-<polyline fill="none" points="0,16 20,13 35,14 55,9 65,4 80,2" stroke="#4edea3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-</svg>
-</td>
-<td class="py-3 px-3 text-center">
-<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-primary-container/15 text-primary border border-primary-container/30 text-label-code font-bold">
-<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
-<span>61 HIGH</span>
-</div>
-</td>
-<td class="py-3 px-3 text-on-surface-variant">
-<span class="text-primary font-medium">Benchmark release:</span> Datacenter compute tier-2 benchmarks outperform previous guidance expectations.
-                </td>
-<td class="py-3 px-3 text-right">
-<button class="p-1 rounded text-outline hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
-</button>
-</td>
-</tr>
+<!-- Rows are populated from the real Supabase watchlist. -->
 </tbody>
 </table>
 </div>
 <!-- Watchlist Table Bottom Metadata Strip -->
 <div class="flex flex-col sm:flex-row items-center justify-between pt-2 border-t border-outline-variant/15 text-label-code font-label-code text-[11px] text-outline">
-<div>Showing 5 of 14 configured asset tickers</div>
+<div>Showing 0 configured asset tickers</div>
 <div class="flex items-center gap-4 mt-2 sm:mt-0">
 <span>Sampling: Discrete 100ms quant batches</span>
-<button class="text-primary hover:underline">View Complete Tape (14)</button>
+<button class="text-primary hover:underline">View Complete Tape (0)</button>
 </div>
 </div>
 </section>
 </main>
 </div>
 <script>
-window.addEventListener("message", (event) => {
-  if (event.origin !== window.location.origin) return;
+/* ============================================================
+   DYNAMIC "SINCE YOU LAST LOOKED"
+   Uses the real MARKET_UPDATE payload from Next.js.
+============================================================ */
+(function () {
+  const names = {
+    AAPL: "Apple Inc.",
+    NVDA: "Nvidia Corp",
+    TSLA: "Tesla Inc.",
+    MSFT: "Microsoft Corp",
+    AMZN: "Amazon.com Inc.",
+    GOOGL: "Alphabet Inc.",
+    META: "Meta Platforms",
+    AMD: "Advanced Micro Devices"
+  };
 
-  if (event.data?.type !== "MARKET_UPDATE") return;
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
-  const stocks = event.data.stocks || [];
+  function formatAgo(timestamp) {
+    if (!timestamp) return "First check";
 
-  console.log("Since You Left data:", stocks);
+    const diffMs = Date.now() - new Date(timestamp).getTime();
 
-  const cards = document.querySelectorAll(
-    ".glass-panel-interactive"
-  );
+    if (!Number.isFinite(diffMs) || diffMs < 0) {
+      return "Just now";
+    }
 
-  stocks.slice(0, 3).forEach((stock, index) => {
-    const card = cards[index];
+    const minutes = Math.floor(diffMs / 60000);
 
-    if (!card) return;
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
 
-    // Find the score number
-    const scoreElements = card.querySelectorAll(
-      ".text-label-code"
+    const hours = Math.floor(minutes / 60);
+
+    if (hours < 24) {
+      const remaining = minutes % 60;
+      return remaining
+        ? `${hours}h ${remaining}m ago`
+        : `${hours}h ago`;
+    }
+
+    return `${Math.floor(hours / 24)}d ago`;
+  }
+
+  function scoreTheme(score) {
+    if (score >= 80) {
+      return {
+        text: "text-error",
+        border: "border-error/30",
+        bg: "bg-error/10",
+        rim: "specular-rim-rose"
+      };
+    }
+
+    if (score >= 60) {
+      return {
+        text: "text-primary",
+        border: "border-primary-container/40",
+        bg: "bg-primary-container/10",
+        rim: "specular-rim-cyan"
+      };
+    }
+
+    if (score >= 30) {
+      return {
+        text: "text-on-surface-variant",
+        border: "border-outline-variant/30",
+        bg: "bg-surface-container-lowest/60",
+        rim: "specular-rim-cyan"
+      };
+    }
+
+    return {
+      text: "text-outline",
+      border: "border-outline-variant/20",
+      bg: "bg-surface-container-lowest/60",
+      rim: "specular-rim-cyan"
+    };
+  }
+
+  function renderSinceYouLeft(stocks) {
+    const container = document.getElementById(
+      "since-you-left-cards"
     );
 
-    scoreElements.forEach((element) => {
-      const text = element.textContent?.trim();
+    if (!container) return;
 
-      if (
-        text === "82" ||
-        text === "74" ||
-        text === "78"
-      ) {
-        element.textContent = String(stock.changeScore);
-      }
+    const analyzed = stocks.map((stock) => {
+      const score = Number(stock.changeScore || 0);
+      const previousScore =
+        stock.previousScore === null ||
+        stock.previousScore === undefined
+          ? null
+          : Number(stock.previousScore);
 
+      const price = Number(stock.currentPrice || 0);
+      const previousPrice =
+        stock.previousPrice === null ||
+        stock.previousPrice === undefined
+          ? null
+          : Number(stock.previousPrice);
+
+      const scoreDelta =
+        previousScore === null
+          ? null
+          : score - previousScore;
+
+      const priceDelta =
+        previousPrice && previousPrice > 0
+          ? ((price - previousPrice) / previousPrice) * 100
+          : null;
+
+      const meaningful =
+        previousScore === null ||
+        Math.abs(scoreDelta || 0) >= 5 ||
+        Math.abs(priceDelta || 0) >= 1;
+
+      return {
+        ...stock,
+        score,
+        previousScore,
+        price,
+        previousPrice,
+        scoreDelta,
+        priceDelta,
+        meaningful
+      };
+    });
+
+    const meaningful = analyzed
+      .filter((stock) => stock.meaningful)
+      .sort((a, b) => {
+        if (a.scoreDelta === null) return 1;
+        if (b.scoreDelta === null) return -1;
+        return Math.abs(b.scoreDelta) - Math.abs(a.scoreDelta);
+      });
+
+    const countElement = document.getElementById(
+      "meaningful-change-count"
+    );
+
+    if (countElement) {
+      countElement.textContent =
+        `${meaningful.length} meaningful ${
+          meaningful.length === 1 ? "change" : "changes"
+        }`;
+    }
+
+    if (!meaningful.length) {
+      container.innerHTML = `
+        <div class="lg:col-span-3 glass-panel rounded-xl p-8 text-center">
+          <div class="flex justify-center mb-3">
+            <span class="material-symbols-outlined text-secondary text-3xl">
+              check_circle
+            </span>
+          </div>
+          <div class="text-on-surface font-semibold">
+            No major changes since your last check
+          </div>
+          <div class="text-outline text-sm mt-1">
+            Your watchlist is quiet right now.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = meaningful
+      .slice(0, 3)
+      .map((stock) => {
+        const symbol = String(stock.symbol || "").toUpperCase();
+        const company =
+          names[symbol] || "Market Asset";
+        const theme = scoreTheme(stock.score);
+
+        const scoreDeltaText =
+          stock.scoreDelta === null
+            ? "Newly added to watchlist"
+            : stock.scoreDelta > 0
+              ? `▲ +${stock.scoreDelta} score since last check`
+              : stock.scoreDelta < 0
+                ? `▼ ${stock.scoreDelta} score since last check`
+                : "● No score change since last check";
+
+        const scoreDeltaClass =
+          stock.scoreDelta === null
+            ? "text-primary"
+            : stock.scoreDelta > 0
+              ? "text-error"
+              : stock.scoreDelta < 0
+                ? "text-secondary"
+                : "text-on-surface-variant";
+
+        const priceChangeText =
+          stock.priceDelta === null
+            ? "No previous price recorded"
+            : `${stock.priceDelta >= 0 ? "▲" : "▼"} ${
+                stock.priceDelta >= 0 ? "+" : ""
+              }${stock.priceDelta.toFixed(2)}% since last check`;
+
+        const reasons = Array.isArray(stock.reasons)
+          ? stock.reasons.slice(0, 3)
+          : [];
+
+        const circumference = 113.1;
+        const offset =
+          circumference -
+          (Math.min(Math.max(stock.score, 0), 100) / 100) *
+            circumference;
+
+        return `
+          <div class="glass-panel-interactive ${theme.rim} rounded-xl p-space-md flex flex-col justify-between relative overflow-hidden">
+            <div class="space-y-3.5">
+
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-bold text-sm text-on-surface">
+                    ${escapeHtml(symbol.slice(0, 2))}
+                  </div>
+
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-headline-sm text-sm font-semibold text-on-surface">
+                        ${escapeHtml(symbol)}
+                      </span>
+
+                      <span class="text-body-md text-xs text-on-surface-variant">
+                        ${escapeHtml(company)}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="text-data-display-sm font-data-display-sm font-semibold text-on-surface">
+                        $${stock.price.toFixed(2)}
+                      </span>
+
+                      <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-label-code text-xs ${stock.changePercent >= 0 ? "bg-secondary/10 border border-secondary/30 text-secondary" : "bg-error/10 border border-error/25 text-error"}">
+                        ${stock.changePercent >= 0 ? "▲" : "▼"}
+                        ${stock.changePercent >= 0 ? "+" : ""}
+                        ${Number(stock.changePercent || 0).toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                  <div class="relative w-12 h-12 flex items-center justify-center">
+                    <svg class="w-12 h-12 -rotate-90" viewBox="0 0 44 44">
+                      <circle
+                        cx="22"
+                        cy="22"
+                        fill="none"
+                        r="18"
+                        stroke="rgba(255,255,255,0.08)"
+                        stroke-width="3"
+                      ></circle>
+
+                      <circle
+                        cx="22"
+                        cy="22"
+                        fill="none"
+                        r="18"
+                        stroke="currentColor"
+                        class="${theme.text}"
+                        stroke-dasharray="${circumference}"
+                        stroke-dashoffset="${offset}"
+                        stroke-linecap="round"
+                        stroke-width="3.2"
+                      ></circle>
+                    </svg>
+
+                    <span class="absolute text-label-code font-label-code font-bold text-xs ${theme.text}">
+                      ${stock.score}
+                    </span>
+                  </div>
+
+                  <span class="text-label-caps font-label-caps tracking-widest text-[9px] font-bold ${theme.text} mt-0.5">
+                    ${escapeHtml(String(stock.severity || "LOW").toUpperCase())}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between py-1 px-2 rounded bg-surface-container-lowest/80 border border-outline-variant/20">
+                <span class="text-label-code text-[11px] text-on-surface-variant">
+                  Last checked:
+                </span>
+
+                <span class="text-label-code text-[11px] text-primary">
+                  ${formatAgo(stock.lastSeenAt)}
+                </span>
+              </div>
+
+              <div class="px-2 py-1.5 rounded ${theme.bg} border ${theme.border} ${scoreDeltaClass} text-xs font-label-code">
+                ${scoreDeltaText}
+              </div>
+
+              <div class="text-xs ${stock.priceDelta !== null && Math.abs(stock.priceDelta) >= 1 ? "text-on-surface" : "text-on-surface-variant"}">
+                ${priceChangeText}
+              </div>
+
+              <div class="space-y-2 pt-1">
+                <div class="text-[10px] uppercase tracking-widest text-outline">
+                  Why it changed
+                </div>
+
+                ${
+                  reasons.length
+                    ? reasons
+                        .map(
+                          (reason) => `
+                            <div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
+                              <span class="${theme.text}">•</span>
+                              ${escapeHtml(reason)}
+                            </div>
+                          `
+                        )
+                        .join("")
+                    : `
+                      <div class="text-body-md text-xs text-outline">
+                        No major changes detected.
+                      </div>
+                    `
+                }
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-label-code text-[11px]">
+              <span class="text-outline">
+                Attention score
+              </span>
+
+              <button
+                type="button"
+                data-inspect-symbol="${escapeHtml(symbol)}"
+                class="text-primary hover:underline inline-flex items-center gap-0.5"
+              >
+                Inspect Tape
+                <span class="material-symbols-outlined text-xs">
+                  chevron_right
+                </span>
+              </button>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin) return;
+    if (event.data?.type !== "MARKET_UPDATE") return;
+
+    const stocks = Array.isArray(event.data.stocks)
+      ? event.data.stocks
+      : [];
+
+    console.log(
+      "DYNAMIC SINCE-YOU-LEFT UPDATE:",
+      stocks
+    );
+
+    renderSinceYouLeft(stocks);
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest(
+      "[data-inspect-symbol]"
+    );
+
+    if (!button) return;
+
+    const symbol =
+      button.getAttribute("data-inspect-symbol");
+
+    if (!symbol) return;
+
+    const cards =
+      document.querySelectorAll(
+        "#since-you-left-cards > div"
+      );
+
+    let selectedCard = null;
+
+    cards.forEach((card) => {
       if (
-        ["CRITICAL", "HIGH", "MEDIUM", "LOW"].includes(text)
+        card.textContent?.includes(symbol)
       ) {
-        element.textContent = stock.severity.toUpperCase();
+        selectedCard = card;
       }
     });
 
-    // Update the current price
-    const priceElements = card.querySelectorAll(
-      ".text-data-display-sm"
-    );
+    if (!selectedCard) return;
 
-    if (priceElements[0]) {
-      priceElements[0].textContent =
-        `$${stock.currentPrice.toFixed(2)}`;
-    }
+    const modal =
+      document.createElement("div");
 
-    // Add Since You Left information
-    const previousScore = stock.previousScore;
+    modal.className =
+      "fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-6";
 
-    if (previousScore !== null) {
-      const scoreDelta =
-        stock.changeScore - previousScore;
+    modal.innerHTML = `
+      <div class="w-full max-w-lg rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-2xl">
 
-      let deltaText;
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <div class="text-primary text-xs uppercase tracking-widest font-bold">
+              Since You Last Looked
+            </div>
 
-      if (scoreDelta > 0) {
-        deltaText = `▲ +${scoreDelta} since you left`;
-      } else if (scoreDelta < 0) {
-        deltaText = `▼ ${scoreDelta} since you left`;
-      } else {
-        deltaText = `● No score change since you left`;
+            <h2 class="text-2xl font-bold text-on-surface mt-1">
+              ${escapeHtml(symbol)}
+            </h2>
+          </div>
+
+          <button
+            id="close-dynamic-tape"
+            class="text-outline hover:text-on-surface text-xl"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="text-sm text-on-surface-variant">
+          ${escapeHtml(selectedCard.textContent || "")}
+        </div>
+
+        <button
+          id="close-dynamic-tape-bottom"
+          class="w-full mt-6 rounded-lg bg-primary-container py-3 text-on-primary font-semibold"
+        >
+          Close Inspection
+        </button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector(
+      "#close-dynamic-tape"
+    ).onclick = () => modal.remove();
+
+    modal.querySelector(
+      "#close-dynamic-tape-bottom"
+    ).onclick = () => modal.remove();
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.remove();
       }
-
-      const existing = Array.from(
-        card.querySelectorAll("div")
-      ).find((element) =>
-        element.textContent?.includes("since you left")
-      );
-
-      if (!existing) {
-        const delta = document.createElement("div");
-
-        delta.className =
-          "mt-2 px-2 py-1 rounded bg-primary-container/10 border border-primary-container/20 text-primary text-xs font-label-code";
-
-        delta.textContent = deltaText;
-
-        const header = card.querySelector(
-          ".space-y-3\\.5"
-        );
-
-        if (header) {
-          header.appendChild(delta);
-        } else {
-          card.prepend(delta);
-        }
-      }
-    }
+    });
   });
-});
+})();
 </script>
-</body>
 <script>
-  window.addEventListener("message", async (event) => {
-    if (event.origin !== window.location.origin) return;
+  // Make "Inspect Tape" buttons functional
+  document.querySelectorAll("button").forEach((button) => {
+    if (button.textContent.includes("Inspect Tape")) {
+      button.addEventListener("click", () => {
+        const card = button.closest(".glass-panel-interactive");
 
-    if (event.data?.type !== "WATCHLIST_UPDATE") return;
+        if (!card) return;
 
-    const symbols = event.data.symbols || [];
+        const symbol =
+          card.querySelector(".font-headline-sm")?.textContent?.trim() ||
+          "Stock";
 
-    console.log("Watchlist received:", symbols);
+        const price =
+          card.querySelector(".text-data-display-sm")?.textContent?.trim() ||
+          "N/A";
 
-    const results = [];
+        const scoreElements = card.querySelectorAll("span");
 
-    for (const symbol of symbols) {
-      try {
-        const response = await fetch(
-          `/api/market/change-score?symbol=${encodeURIComponent(symbol)}`
+        let score = "N/A";
+        let severity = "N/A";
+
+        scoreElements.forEach((element) => {
+          const text = element.textContent?.trim();
+
+          if (/^\d+$/.test(text)) {
+            const number = Number(text);
+
+            if (number >= 0 && number <= 100) {
+              score = text;
+            }
+          }
+
+          if (["LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(text)) {
+            severity = text;
+          }
+        });
+
+        const reasons = Array.from(
+          card.querySelectorAll(".text-body-md")
+        )
+          .map((element) => element.textContent?.trim())
+          .filter(Boolean)
+          .slice(0, 4);
+
+        const modal = document.createElement("div");
+
+        modal.className =
+          "fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-6";
+
+        modal.innerHTML = `
+          <div class="w-full max-w-lg rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-2xl">
+
+            <div class="flex items-start justify-between mb-6">
+              <div>
+                <div class="text-primary text-xs uppercase tracking-widest font-bold">
+                  Tape Inspection
+                </div>
+
+                <h2 class="text-2xl font-bold text-on-surface mt-1">
+                  ${symbol}
+                </h2>
+
+                <div class="text-on-surface-variant text-sm mt-1">
+                  Current price: ${price}
+                </div>
+              </div>
+
+              <button
+                id="close-tape"
+                class="text-outline hover:text-on-surface text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-6">
+              <div class="rounded-lg bg-surface-container p-4">
+                <div class="text-outline text-xs uppercase">
+                  Change Score
+                </div>
+                <div class="text-3xl font-bold text-primary mt-1">
+                  ${score}
+                </div>
+              </div>
+
+              <div class="rounded-lg bg-surface-container p-4">
+                <div class="text-outline text-xs uppercase">
+                  Severity
+                </div>
+                <div class="text-xl font-bold text-error mt-3">
+                  ${severity}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs uppercase tracking-widest text-outline mb-3">
+                Why it changed
+              </div>
+
+              <div class="space-y-2">
+                ${
+                  reasons.length
+                    ? reasons
+                        .map(
+                          (reason) => `
+                            <div class="rounded-lg bg-surface-container p-3 text-sm text-on-surface-variant">
+                              ${reason}
+                            </div>
+                          `
+                        )
+                        .join("")
+                    : `
+                      <div class="text-sm text-outline">
+                        No major changes detected.
+                      </div>
+                    `
+                }
+              </div>
+            </div>
+
+            <button
+              id="close-tape-bottom"
+              class="w-full mt-6 rounded-lg bg-primary-container py-3 text-on-primary font-semibold"
+            >
+              Close Inspection
+            </button>
+
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.querySelector("#close-tape").onclick = () => {
+          modal.remove();
+        };
+
+        modal.querySelector("#close-tape-bottom").onclick = () => {
+          modal.remove();
+        };
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            modal.remove();
+          }
+        });
+      });
+    }
+  });
+</script>
+<script>
+  document.querySelectorAll("button").forEach((button) => {
+    if (button.textContent.includes("Add Stock")) {
+      button.addEventListener("click", () => {
+        const symbol = prompt(
+          "Enter a stock ticker (example: AAPL)"
         );
 
-        if (!response.ok) continue;
+        if (!symbol) return;
 
-        const data = await response.json();
-
-        results.push(data);
-      } catch (error) {
-        console.error(`Failed to load ${symbol}:`, error);
-      }
+        window.parent.postMessage(
+          {
+            type: "ADD_STOCK",
+            symbol: symbol.trim().toUpperCase(),
+          },
+          window.location.origin
+        );
+      });
     }
-
-    console.log("Real watchlist data:", results);
-
-    updateWatchlistTable(results);
   });
+</script>
+<script>
+// ============================================================
+// REAL WATCHLIST TABLE
+// The parent Next.js page sends the user's actual Supabase
+// watchlist through the MARKET_UPDATE message.
+// ============================================================
+(function () {
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
-  function updateWatchlistTable(stocks) {
+  function renderWatchlist(stocks) {
     const table = document.querySelector("table");
+    const tbody = table?.querySelector("tbody");
 
-    if (!table) return;
-
-    const tbody = table.querySelector("tbody");
-
-    if (!tbody) return;
+    if (!tbody) {
+      console.error("Watchlist table not found");
+      return;
+    }
 
     tbody.innerHTML = "";
 
+    const count = stocks.length;
+
+    // Update the visible watchlist count.
+    document.querySelectorAll("span").forEach((element) => {
+      if (element.textContent?.trim().match(/^\d+ Assets Monitored$/)) {
+        element.textContent = `${count} Assets Monitored`;
+      }
+    });
+
+    // Update bottom metadata.
+    const metadata = Array.from(document.querySelectorAll("div")).find(
+      (element) => element.textContent?.trim() === "Showing 0 configured asset tickers"
+    );
+
+    if (metadata) {
+      metadata.textContent = `Showing ${count} configured asset ticker${count === 1 ? "" : "s"}`;
+    }
+
+    const tapeButton = Array.from(document.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("View Complete Tape")
+    );
+
+    if (tapeButton) {
+      tapeButton.textContent = `View Complete Tape (${count})`;
+    }
+
+    if (count === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="py-10 px-3 text-center text-outline">
+            No stocks in your watchlist. Click <span class="text-primary">+ Add Stock</span> to add one.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     stocks.forEach((stock) => {
+      const symbol = String(stock.symbol || "").toUpperCase();
       const change = Number(stock.changePercent || 0);
       const score = Number(stock.changeScore || 0);
-
-      const direction = change >= 0 ? "▲" : "▼";
-      const changeClass =
-        change >= 0 ? "text-secondary" : "text-error";
-
-      const severity =
-        stock.severity?.toUpperCase() || "LOW";
-
-      const scoreClass =
-        score >= 60
-          ? "text-primary"
-          : score >= 30
-            ? "text-on-surface-variant"
-            : "text-outline";
-
+      const severity = String(stock.severity || "low").toUpperCase();
       const reasons = Array.isArray(stock.reasons)
-        ? stock.reasons.slice(0, 2).join(" • ")
+        ? stock.reasons.slice(0, 2).map(escapeHtml).join(" • ")
         : "No major changes detected";
 
-      const row = document.createElement("tr");
+      const direction = change >= 0 ? "▲" : "▼";
+      const changeClass = change >= 0 ? "text-secondary" : "text-error";
 
-      row.className =
-        "hover:bg-surface-container-high/20 transition-colors group";
+      let scoreClass = "text-outline";
+      let scoreDot = "bg-outline";
+
+      if (score >= 80) {
+        scoreClass = "text-error";
+        scoreDot = "bg-error";
+      } else if (score >= 60) {
+        scoreClass = "text-primary";
+        scoreDot = "bg-primary-container";
+      } else if (score >= 30) {
+        scoreClass = "text-on-surface-variant";
+        scoreDot = "bg-primary";
+      }
+
+      const row = document.createElement("tr");
+      row.className = "hover:bg-surface-container-high/20 transition-colors group";
+      row.dataset.symbol = symbol;
 
       row.innerHTML = `
         <td class="py-3 px-3">
           <div class="flex items-center gap-2">
             <span class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center font-label-code text-[10px] text-on-surface font-semibold">
-              ${stock.symbol.slice(0, 2)}
+              ${escapeHtml(symbol.slice(0, 2))}
             </span>
-
             <div>
               <span class="font-semibold text-on-surface block leading-none">
-                ${stock.symbol}
+                ${escapeHtml(symbol)}
               </span>
-
               <span class="text-[10px] text-outline">
                 Market Asset
               </span>
@@ -1024,9 +1221,9 @@ window.addEventListener("message", (event) => {
 
         <td class="py-3 px-3 text-center">
           <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-outline border border-outline-variant/30 text-label-code">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <span class="w-1.5 h-1.5 rounded-full ${scoreDot}"></span>
             <span class="${scoreClass}">
-              ${score} ${severity}
+              ${score} ${escapeHtml(severity)}
             </span>
           </div>
         </td>
@@ -1036,9 +1233,14 @@ window.addEventListener("message", (event) => {
         </td>
 
         <td class="py-3 px-3 text-right">
-          <button class="p-1 rounded text-outline hover:text-primary transition-colors">
-            <span class="material-symbols-outlined text-sm">
-              more_vert
+          <button
+            type="button"
+            data-remove-stock="${escapeHtml(symbol)}"
+            title="Remove ${escapeHtml(symbol)}"
+            class="p-1 rounded text-outline hover:text-error transition-colors cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-sm" data-icon="delete">
+              delete
             </span>
           </button>
         </td>
@@ -1047,185 +1249,735 @@ window.addEventListener("message", (event) => {
       tbody.appendChild(row);
     });
   }
-  
-window.addEventListener("message", async (event) => {
-  if (event.origin !== window.location.origin) return;
-  if (event.data?.type !== "WATCHLIST_UPDATE") return;
 
-  const symbols = event.data.symbols || [];
+  // Receive the actual watchlist data from Next.js.
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin) return;
+    if (event.data?.type !== "MARKET_UPDATE") return;
 
-  console.log("Loading real watchlist:", symbols);
+    const stocks = Array.isArray(event.data.stocks)
+      ? event.data.stocks
+      : [];
 
-  const results = await Promise.all(
-    symbols.map(async (symbol) => {
-      try {
-        const response = await fetch(
-          `/api/market/change-score?symbol=${encodeURIComponent(symbol)}`
-        );
+    console.log("REAL WATCHLIST UPDATE:", stocks);
+    renderWatchlist(stocks);
+  });
 
-        if (!response.ok) return null;
+  // Remove buttons use event delegation because the rows are dynamic.
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
 
-        return await response.json();
-      } catch (error) {
-        console.error(`Failed to load ${symbol}`, error);
-        return null;
-      }
-    })
-  );
+    const button = target.closest("[data-remove-stock]");
+    if (!button) return;
 
-  const stocks = results.filter(Boolean);
+    const symbol = button.getAttribute("data-remove-stock");
+    if (!symbol) return;
 
-  console.log("Real watchlist data:", stocks);
+    const confirmed = window.confirm(
+      `Remove ${symbol} from your watchlist?`
+    );
 
-  const table = document.querySelector("table");
-  const tbody = table?.querySelector("tbody");
+    if (!confirmed) return;
 
-  if (!tbody) {
-    console.error("Watchlist table not found");
-    return;
+    console.log("REMOVE_STOCK:", symbol);
+
+    window.parent.postMessage(
+      {
+        type: "REMOVE_STOCK",
+        symbol: symbol,
+      },
+      window.location.origin
+    );
+  });
+})();
+</script>
+
+<script>
+/* ============================================================
+   SINCE YOU LAST LOOKED
+   Uses previousScore, previousPrice and lastSeenAt from the
+   real user_ticker_state data sent by Next.js.
+============================================================ */
+(function () {
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  tbody.innerHTML = "";
+  function severityClass(severity) {
+    const s = String(severity || "").toLowerCase();
+    if (s === "critical" || s === "high") return "text-error";
+    if (s === "medium") return "text-primary";
+    return "text-secondary";
+  }
 
-  stocks.forEach((stock) => {
-    const change = Number(stock.changePercent || 0);
+  function severityBorder(severity) {
+    const s = String(severity || "").toLowerCase();
+    if (s === "critical" || s === "high") return "specular-rim-rose";
+    return "specular-rim-cyan";
+  }
+
+  function relativeTime(timestamp) {
+    if (!timestamp) return "No previous check";
+
+    const then = new Date(timestamp).getTime();
+    if (Number.isNaN(then)) return "No previous check";
+
+    const minutes = Math.max(0, Math.floor((Date.now() - then) / 60000));
+
+    if (minutes < 1) return "just now";
+    if (minutes < 60) return `${minutes}m ago`;
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ${minutes % 60}m ago`;
+
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
+
+  function getDeltaInfo(stock) {
     const score = Number(stock.changeScore || 0);
 
-    const row = document.createElement("tr");
+    const previousScore =
+      stock.previousScore === null ||
+      stock.previousScore === undefined
+        ? null
+        : Number(stock.previousScore);
 
-    row.className =
-      "border-b border-outline-variant/20 hover:bg-surface-container-high/30";
+    const previousPrice =
+      stock.previousPrice === null ||
+      stock.previousPrice === undefined
+        ? null
+        : Number(stock.previousPrice);
 
-    row.innerHTML = `
-      <td class="py-3 px-3">
-        <span class="font-bold text-on-surface">
-          ${stock.symbol}
-        </span>
-      </td>
+    const currentPrice = Number(stock.currentPrice || 0);
 
-      <td class="py-3 px-3 text-right font-mono text-on-surface">
-        $${Number(stock.currentPrice).toFixed(2)}
-      </td>
+    const scoreDelta =
+      previousScore === null ? null : score - previousScore;
 
-      <td class="py-3 px-3 text-right font-mono ${
-        change >= 0 ? "text-secondary" : "text-error"
-      }">
-        ${change >= 0 ? "▲" : "▼"}
-        ${change >= 0 ? "+" : ""}${change.toFixed(2)}%
-      </td>
+    const priceDeltaPercent =
+      previousPrice !== null && previousPrice > 0
+        ? ((currentPrice - previousPrice) / previousPrice) * 100
+        : null;
 
-      <td class="py-3 px-3 text-center">
-        <span class="text-primary font-bold">
-          ${score}
-        </span>
-      </td>
+    const isNew = previousScore === null;
+    const isMeaningful =
+      isNew ||
+      Math.abs(scoreDelta || 0) >= 5 ||
+      Math.abs(priceDeltaPercent || 0) >= 1;
 
-      <td class="py-3 px-3 text-center">
-        <span class="text-xs uppercase">
-          ${stock.severity}
-        </span>
-      </td>
-
-      <td class="py-3 px-3 text-on-surface-variant text-sm">
-        ${(stock.reasons || []).slice(0, 2).join(" • ")}
-      </td>
-    `;
-
-    tbody.appendChild(row);
-  });
-});
-  async function loadRealAAPLData() {
-    try {
-      const response = await fetch("/api/market/change-score?symbol=AAPL");
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch AAPL data");
-      }
-
-      const data = await response.json();
-
-      // Find the first AAPL anomaly card
-      const cards = document.querySelectorAll(".glass-panel-interactive");
-      const aaplCard = Array.from(cards).find((card) =>
-        card.textContent.includes("AAPL")
-      );
-
-      if (!aaplCard) return;
-
-      // Update price
-      const priceElement = aaplCard.querySelector(
-        ".text-data-display-sm"
-      );
-
-      if (priceElement && typeof data.currentPrice === "number") {
-        priceElement.textContent = `$${data.currentPrice.toFixed(2)}`;
-      }
-
-      // Update daily percentage
-      const deltaElement = Array.from(
-        aaplCard.querySelectorAll("span")
-      ).find((element) =>
-        element.textContent.includes("%")
-      );
-
-      if (deltaElement && typeof data.changePercent === "number") {
-        const change = data.changePercent;
-        const arrow = change >= 0 ? "▲" : "▼";
-
-        deltaElement.textContent =
-          `${arrow} ${change >= 0 ? "+" : ""}${change.toFixed(2)}%`;
-      }
-
-      // Update Change Score
-      const scoreElement = Array.from(
-        aaplCard.querySelectorAll("span")
-      ).find((element) =>
-        ["82", "81", "80"].includes(element.textContent.trim())
-      );
-
-      if (scoreElement) {
-        scoreElement.textContent = data.changeScore;
-      }
-
-      // Update severity
-      const severityElements = Array.from(
-        aaplCard.querySelectorAll("span")
-      );
-
-      const severityElement = severityElements.find((element) =>
-        ["CRITICAL", "HIGH", "MEDIUM", "LOW"].includes(
-          element.textContent.trim()
-        )
-      );
-
-      if (severityElement) {
-        severityElement.textContent =
-          data.severity.toUpperCase();
-      }
-
-      // Update reasons
-      const reasonContainer = aaplCard.querySelector(
-        ".space-y-2.pt-1"
-      );
-
-      if (reasonContainer && Array.isArray(data.reasons)) {
-        reasonContainer.innerHTML = data.reasons
-          .map(
-            (reason) => `
-              <div class="text-body-md text-xs text-on-surface-variant leading-relaxed">
-                <span class="text-primary font-medium">Signal:</span>
-                ${reason}
-              </div>
-            `
-          )
-          .join("");
-      }
-
-      console.log("AAPL data updated:", data);
-    } catch (error) {
-      console.error("Could not load AAPL data:", error);
-    }
+    return {
+      previousScore,
+      previousPrice,
+      scoreDelta,
+      priceDeltaPercent,
+      isNew,
+      isMeaningful,
+    };
   }
 
-  document.addEventListener("DOMContentLoaded", loadRealAAPLData);
-</script></html>
+  function renderLiveDeltaCards(stocks) {
+    const sections = document.querySelectorAll("main section");
+    const heroSection = sections[0];
+
+    if (!heroSection) return;
+
+    const grid = heroSection.querySelector(".grid.grid-cols-1");
+    if (!grid) return;
+
+    const enriched = stocks.map((stock) => ({
+      ...stock,
+      deltaInfo: getDeltaInfo(stock),
+    }));
+
+    const meaningful = enriched
+      .filter((stock) => stock.deltaInfo.isMeaningful)
+      .sort((a, b) => {
+        const aDelta = Math.abs(a.deltaInfo.scoreDelta || 0);
+        const bDelta = Math.abs(b.deltaInfo.scoreDelta || 0);
+
+        if (bDelta !== aDelta) return bDelta - aDelta;
+
+        return (
+          Number(b.changeScore || 0) -
+          Number(a.changeScore || 0)
+        );
+      });
+
+    const featured = (
+      meaningful.length
+        ? meaningful
+        : [...enriched].sort(
+            (a, b) =>
+              Number(b.changeScore || 0) -
+              Number(a.changeScore || 0)
+          )
+    ).slice(0, 3);
+
+    // Update the hero copy to explicitly answer the hackathon prompt.
+    const summaryText = heroSection.querySelector("h1 + p");
+
+    if (summaryText) {
+      if (meaningful.length === 0) {
+        summaryText.innerHTML = `
+          <span class="text-secondary font-semibold">
+            No meaningful changes
+          </span>
+          detected since your last check.
+          <span class="text-on-surface-variant">
+            Your watchlist is currently quiet.
+          </span>
+        `;
+      } else {
+        summaryText.innerHTML = `
+          <span class="text-primary font-semibold">
+            ${meaningful.length} meaningful
+            ${meaningful.length === 1 ? "change" : "changes"}
+          </span>
+          detected since your last check.
+          <span class="text-on-surface-variant">
+            Ranked by what deserves your attention first.
+          </span>
+        `;
+      }
+    }
+
+    // Update the small filter/status chip.
+    const statusChips = heroSection.querySelectorAll(
+      ".inline-flex.items-center"
+    );
+
+    statusChips.forEach((chip) => {
+      if (
+        chip.textContent?.includes("Filtered out") ||
+        chip.textContent?.includes("low-signal")
+      ) {
+        chip.innerHTML = `
+          <span class="material-symbols-outlined text-xs text-secondary">
+            check_circle
+          </span>
+          ${meaningful.length} meaningful change${meaningful.length === 1 ? "" : "s"} surfaced
+        `;
+      }
+    });
+
+    if (!featured.length) {
+      grid.innerHTML = `
+        <div class="glass-panel rounded-xl p-8 lg:col-span-3 text-center">
+          <div class="text-secondary font-semibold text-lg">
+            Your watchlist is quiet.
+          </div>
+          <div class="text-on-surface-variant text-sm mt-2">
+            No meaningful changes detected since your last check.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = featured.map((stock) => {
+      const symbol = String(stock.symbol || "").toUpperCase();
+      const score = Math.max(
+        0,
+        Math.min(100, Number(stock.changeScore || 0))
+      );
+
+      const severity = String(
+        stock.severity || "low"
+      ).toUpperCase();
+
+      const change = Number(stock.changePercent || 0);
+      const price = Number(stock.currentPrice || 0);
+
+      const reasons = Array.isArray(stock.reasons)
+        ? stock.reasons.slice(0, 3)
+        : [];
+
+      const {
+        previousScore,
+        priceDeltaPercent,
+        scoreDelta,
+        isNew,
+      } = stock.deltaInfo;
+
+      const direction = change >= 0 ? "▲" : "▼";
+      const changeClass =
+        change >= 0 ? "text-secondary" : "text-error";
+
+      const colorClass = severityClass(severity);
+      const rimClass = severityBorder(severity);
+
+      const circumference = 113.1;
+      const offset =
+        circumference - (score / 100) * circumference;
+
+      let sinceText = "Newly added to watchlist";
+      let deltaColor = "text-primary";
+
+      if (!isNew) {
+        if (scoreDelta > 0) {
+          sinceText = `▲ +${scoreDelta} score since last check`;
+          deltaColor = "text-error";
+        } else if (scoreDelta < 0) {
+          sinceText = `▼ ${Math.abs(scoreDelta)} score since last check`;
+          deltaColor = "text-secondary";
+        } else if (priceDeltaPercent > 0) {
+          sinceText = `▲ ${priceDeltaPercent.toFixed(2)}% price since last check`;
+          deltaColor = "text-secondary";
+        } else if (priceDeltaPercent < 0) {
+          sinceText = `▼ ${Math.abs(priceDeltaPercent).toFixed(2)}% price since last check`;
+          deltaColor = "text-error";
+        } else {
+          sinceText = "No material movement since last check";
+          deltaColor = "text-on-surface-variant";
+        }
+      }
+
+      return `
+        <div
+          class="glass-panel-interactive ${rimClass}
+          rounded-xl p-space-md flex flex-col justify-between
+          relative overflow-hidden group"
+        >
+          <div class="space-y-3.5">
+
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="w-9 h-9 rounded-lg bg-surface-container-high
+                  border border-outline-variant/40 flex items-center
+                  justify-center font-bold text-sm text-on-surface
+                  font-label-code"
+                >
+                  ${escapeHtml(symbol.slice(0, 2))}
+                </div>
+
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span
+                      class="font-headline-sm text-sm font-semibold text-on-surface"
+                    >
+                      ${escapeHtml(symbol)}
+                    </span>
+
+                    <span
+                      class="text-body-md text-xs text-on-surface-variant"
+                    >
+                      Market Asset
+                    </span>
+                  </div>
+
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span
+                      class="text-data-display-sm font-data-display-sm
+                      font-semibold text-on-surface"
+                    >
+                      $${price.toFixed(2)}
+                    </span>
+
+                    <span
+                      class="inline-flex items-center gap-0.5 px-1.5
+                      py-0.2 rounded text-label-code text-xs
+                      border border-outline-variant/25 ${changeClass}"
+                    >
+                      ${direction}
+                      ${change >= 0 ? "+" : ""}
+                      ${change.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-center">
+                <div
+                  class="relative w-12 h-12 flex items-center justify-center"
+                >
+                  <svg
+                    class="w-12 h-12 -rotate-90"
+                    viewBox="0 0 44 44"
+                  >
+                    <circle
+                      cx="22"
+                      cy="22"
+                      fill="none"
+                      r="18"
+                      stroke="rgba(255,255,255,0.08)"
+                      stroke-width="3"
+                    ></circle>
+
+                    <circle
+                      cx="22"
+                      cy="22"
+                      fill="none"
+                      r="18"
+                      stroke="${
+                        severity === "CRITICAL" ||
+                        severity === "HIGH"
+                          ? "#ffb4ab"
+                          : "#00d2ff"
+                      }"
+                      stroke-dasharray="${circumference}"
+                      stroke-dashoffset="${offset}"
+                      stroke-linecap="round"
+                      stroke-width="3.2"
+                    ></circle>
+                  </svg>
+
+                  <span
+                    class="absolute text-label-code
+                    font-label-code font-bold text-xs ${colorClass}"
+                  >
+                    ${score}
+                  </span>
+                </div>
+
+                <span
+                  class="text-label-caps font-label-caps
+                  tracking-widest text-[9px] font-bold
+                  ${colorClass} mt-0.5"
+                >
+                  ${escapeHtml(severity)}
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="py-2 px-2.5 rounded bg-primary-container/10
+              border border-primary-container/20"
+            >
+              <div
+                class="flex items-center justify-between gap-2"
+              >
+                <span
+                  class="text-label-code text-[10px]
+                  text-on-surface-variant uppercase tracking-wider"
+                >
+                  Since you last looked
+                </span>
+
+                <span
+                  class="text-label-code text-[10px] ${deltaColor}"
+                >
+                  ${relativeTime(stock.lastSeenAt)}
+                </span>
+              </div>
+
+              <div
+                class="text-sm font-semibold ${deltaColor} mt-1"
+              >
+                ${escapeHtml(sinceText)}
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-1">
+              ${
+                reasons.length
+                  ? reasons.map((reason) => `
+                    <div
+                      class="text-body-md text-xs
+                      text-on-surface-variant leading-relaxed"
+                    >
+                      <span class="${colorClass} font-medium">
+                        Driver:
+                      </span>
+                      ${escapeHtml(reason)}
+                    </div>
+                  `).join("")
+                  : `
+                    <div
+                      class="text-body-md text-xs
+                      text-on-surface-variant"
+                    >
+                      No major changes detected.
+                    </div>
+                  `
+              }
+            </div>
+          </div>
+
+          <div
+            class="mt-4 pt-3 border-t border-outline-variant/20
+            flex items-center justify-between text-label-code text-[11px]"
+          >
+            <span class="text-outline">
+              Attention Score: ${score}/100
+            </span>
+
+            <button
+              type="button"
+              data-live-inspect="${escapeHtml(symbol)}"
+              class="text-primary hover:underline
+              inline-flex items-center gap-0.5"
+            >
+              Inspect Tape
+              <span class="material-symbols-outlined text-xs">
+                chevron_right
+              </span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // Keep Inspect Tape functional for the newly-rendered cards.
+    grid.querySelectorAll("[data-live-inspect]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const symbol = button.getAttribute("data-live-inspect");
+
+        const stock = stocks.find(
+          (item) =>
+            String(item.symbol).toUpperCase() === symbol
+        );
+
+        if (!stock) return;
+
+        const reasons = Array.isArray(stock.reasons)
+          ? stock.reasons
+          : [];
+
+        const deltaInfo = getDeltaInfo(stock);
+
+        const modal = document.createElement("div");
+
+        modal.className =
+          "fixed inset-0 z-[100] flex items-center justify-center " +
+          "bg-black/70 backdrop-blur-sm p-6";
+
+        modal.innerHTML = `
+          <div
+            class="w-full max-w-lg rounded-xl border
+            border-outline-variant/40 bg-surface-container-lowest
+            p-6 shadow-2xl"
+          >
+            <div class="flex items-start justify-between mb-6">
+              <div>
+                <div
+                  class="text-primary text-xs uppercase
+                  tracking-widest font-bold"
+                >
+                  Since You Last Looked
+                </div>
+
+                <h2
+                  class="text-2xl font-bold text-on-surface mt-1"
+                >
+                  ${escapeHtml(symbol)}
+                </h2>
+
+                <div
+                  class="text-on-surface-variant text-sm mt-1"
+                >
+                  Current price:
+                  $${Number(stock.currentPrice || 0).toFixed(2)}
+                </div>
+              </div>
+
+              <button
+                id="live-close"
+                class="text-outline hover:text-on-surface text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="rounded-lg bg-surface-container p-4">
+                <div class="text-outline text-xs uppercase">
+                  Attention Score
+                </div>
+
+                <div
+                  class="text-3xl font-bold text-primary mt-1"
+                >
+                  ${Number(stock.changeScore || 0)}
+                </div>
+              </div>
+
+              <div class="rounded-lg bg-surface-container p-4">
+                <div class="text-outline text-xs uppercase">
+                  Score Change
+                </div>
+
+                <div
+                  class="text-3xl font-bold mt-1 ${
+                    (deltaInfo.scoreDelta || 0) > 0
+                      ? "text-error"
+                      : "text-secondary"
+                  }"
+                >
+                  ${
+                    deltaInfo.scoreDelta === null
+                      ? "NEW"
+                      : deltaInfo.scoreDelta > 0
+                        ? `+${deltaInfo.scoreDelta}`
+                        : deltaInfo.scoreDelta
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="rounded-lg bg-primary-container/10
+              border border-primary-container/20 p-4 mb-5"
+            >
+              <div class="text-outline text-xs uppercase">
+                Last checked
+              </div>
+
+              <div class="text-on-surface mt-1 font-semibold">
+                ${relativeTime(stock.lastSeenAt)}
+              </div>
+
+              ${
+                deltaInfo.priceDeltaPercent !== null
+                  ? `
+                    <div
+                      class="text-on-surface-variant text-sm mt-1"
+                    >
+                      Price moved
+                      ${
+                        deltaInfo.priceDeltaPercent >= 0
+                          ? "+"
+                          : ""
+                      }${deltaInfo.priceDeltaPercent.toFixed(2)}%
+                      since then.
+                    </div>
+                  `
+                  : ""
+              }
+            </div>
+
+            <div
+              class="text-xs uppercase tracking-widest
+              text-outline mb-3"
+            >
+              Why it changed
+            </div>
+
+            <div class="space-y-2">
+              ${
+                reasons.length
+                  ? reasons.map((reason) => `
+                    <div
+                      class="rounded-lg bg-surface-container
+                      p-3 text-sm text-on-surface-variant"
+                    >
+                      ${escapeHtml(reason)}
+                    </div>
+                  `).join("")
+                  : `
+                    <div class="text-sm text-outline">
+                      No major changes detected.
+                    </div>
+                  `
+              }
+            </div>
+
+            <button
+              id="live-close-bottom"
+              class="w-full mt-6 rounded-lg
+              bg-primary-container py-3 text-on-primary font-semibold"
+            >
+              Close Inspection
+            </button>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.querySelector("#live-close").onclick =
+          () => modal.remove();
+
+        modal.querySelector("#live-close-bottom").onclick =
+          () => modal.remove();
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) modal.remove();
+        });
+      });
+    });
+  }
+
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin) return;
+    if (event.data?.type !== "MARKET_UPDATE") return;
+
+    const stocks = Array.isArray(event.data.stocks)
+      ? event.data.stocks
+      : [];
+
+    console.log("SINCE LAST LOOKED:", stocks);
+
+    renderLiveDeltaCards(stocks);
+  });
+})();
+</script>
+
+
+<script>
+/* ============================================================
+   SYNC NOW
+   Ask the parent Next.js page to fetch fresh market data.
+============================================================ */
+(function () {
+  const button = document.getElementById("sync-now-btn");
+  if (!button) return;
+
+  const label = button.querySelector(".font-semibold");
+  const icon = button.querySelector(".material-symbols-outlined");
+
+  button.addEventListener("click", () => {
+    if (button.dataset.syncing === "true") return;
+
+    button.dataset.syncing = "true";
+    button.disabled = true;
+
+    if (label) label.textContent = "Syncing...";
+    if (icon) icon.classList.add("animate-spin");
+
+    window.parent.postMessage(
+      { type: "SYNC_NOW" },
+      window.location.origin
+    );
+  });
+
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin) return;
+
+    if (event.data?.type === "SYNC_COMPLETE") {
+      button.dataset.syncing = "false";
+      button.disabled = false;
+
+      if (label) label.textContent = "Sync Now";
+      if (icon) icon.classList.remove("animate-spin");
+
+      const time = new Date().toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+
+      button.title = `Last synced ${time}`;
+    }
+
+    if (event.data?.type === "SYNC_ERROR") {
+      button.dataset.syncing = "false";
+      button.disabled = false;
+
+      if (label) label.textContent = "Sync Now";
+      if (icon) icon.classList.remove("animate-spin");
+
+      console.error("SYNC FAILED:", event.data.message);
+      alert(`Sync failed: ${event.data.message || "Unknown error"}`);
+    }
+  });
+})();
+</script>
+
+</body>
+
+</html>
