@@ -818,6 +818,103 @@
 </section>
 </main>
 </div>
+<script>
+window.addEventListener("message", (event) => {
+  if (event.origin !== window.location.origin) return;
+
+  if (event.data?.type !== "MARKET_UPDATE") return;
+
+  const stocks = event.data.stocks || [];
+
+  console.log("Since You Left data:", stocks);
+
+  const cards = document.querySelectorAll(
+    ".glass-panel-interactive"
+  );
+
+  stocks.slice(0, 3).forEach((stock, index) => {
+    const card = cards[index];
+
+    if (!card) return;
+
+    // Find the score number
+    const scoreElements = card.querySelectorAll(
+      ".text-label-code"
+    );
+
+    scoreElements.forEach((element) => {
+      const text = element.textContent?.trim();
+
+      if (
+        text === "82" ||
+        text === "74" ||
+        text === "78"
+      ) {
+        element.textContent = String(stock.changeScore);
+      }
+
+      if (
+        ["CRITICAL", "HIGH", "MEDIUM", "LOW"].includes(text)
+      ) {
+        element.textContent = stock.severity.toUpperCase();
+      }
+    });
+
+    // Update the current price
+    const priceElements = card.querySelectorAll(
+      ".text-data-display-sm"
+    );
+
+    if (priceElements[0]) {
+      priceElements[0].textContent =
+        `$${stock.currentPrice.toFixed(2)}`;
+    }
+
+    // Add Since You Left information
+    const previousScore = stock.previousScore;
+
+    if (previousScore !== null) {
+      const scoreDelta =
+        stock.changeScore - previousScore;
+
+      let deltaText;
+
+      if (scoreDelta > 0) {
+        deltaText = `▲ +${scoreDelta} since you left`;
+      } else if (scoreDelta < 0) {
+        deltaText = `▼ ${scoreDelta} since you left`;
+      } else {
+        deltaText = `● No score change since you left`;
+      }
+
+      const existing = Array.from(
+        card.querySelectorAll("div")
+      ).find((element) =>
+        element.textContent?.includes("since you left")
+      );
+
+      if (!existing) {
+        const delta = document.createElement("div");
+
+        delta.className =
+          "mt-2 px-2 py-1 rounded bg-primary-container/10 border border-primary-container/20 text-primary text-xs font-label-code";
+
+        delta.textContent = deltaText;
+
+        const header = card.querySelector(
+          ".space-y-3\\.5"
+        );
+
+        if (header) {
+          header.appendChild(delta);
+        } else {
+          card.prepend(delta);
+        }
+      }
+    }
+  });
+});
+</script>
 </body>
 <script>
   window.addEventListener("message", async (event) => {

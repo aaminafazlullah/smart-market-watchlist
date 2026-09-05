@@ -12,12 +12,21 @@ type Watchlist = {
   name: string;
 };
 
+type MarketData = {
+  symbol: string;
+  currentPrice: number;
+  changePercent: number;
+  changeScore: number;
+  severity: string;
+  reasons: string[];
+};
+
 export default function Home() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [symbols, setSymbols] = useState<string[]>([]);
+  const [stocks, setStocks] = useState<MarketData[]>([]);
 
   useEffect(() => {
-    async function loadWatchlist() {
+    async function loadDashboard() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -27,7 +36,6 @@ export default function Home() {
         return;
       }
 
-      // Get the user's existing watchlist
       const { data: watchlists, error } = await supabase
         .from("watchlists")
         .select("id, name")
@@ -42,7 +50,6 @@ export default function Home() {
 
       let watchlist: Watchlist | null = watchlists?.[0] ?? null;
 
-      // Create a default watchlist for a new user
       if (!watchlist) {
         const { data: newWatchlist, error: createError } =
           await supabase
@@ -55,47 +62,24 @@ export default function Home() {
             .single();
 
         if (createError) {
-          console.error(
-            "Failed to create watchlist:",
-            createError
-          );
+          console.error("Failed to create watchlist:", createError);
           return;
         }
 
         watchlist = newWatchlist;
 
-        // Starter stocks
-        const starterSymbols = [
-          "AAPL",
-          "NVDA",
-          "TSLA",
-          "MSFT",
-        ];
+        const starterSymbols = ["AAPL", "NVDA", "TSLA", "MSFT"];
 
-        const { error: itemsError } = await supabase
-          .from("watchlist_items")
-          .insert(
-            starterSymbols.map((symbol) => ({
-              watchlist_id: watchlist!.id,
-              symbol,
-            }))
-          );
-
-        if (itemsError) {
-          console.error(
-            "Failed to add starter stocks:",
-            itemsError
-          );
-        }
+        await supabase.from("watchlist_items").insert(
+          starterSymbols.map((symbol) => ({
+            watchlist_id: watchlist!.id,
+            symbol,
+          }))
+        );
       }
 
-      // Make sure TypeScript knows the watchlist exists
-      if (!watchlist) {
-        console.error("No watchlist available");
-        return;
-      }
+      if (!watchlist) return;
 
-      // Load stocks from the user's watchlist
       const { data: items, error: itemsError } = await supabase
         .from("watchlist_items")
         .select("symbol")
@@ -103,43 +87,94 @@ export default function Home() {
         .order("created_at", { ascending: true });
 
       if (itemsError) {
-        console.error(
-          "Failed to load watchlist items:",
-          itemsError
-        );
+        console.error("Failed to load watchlist items:", itemsError);
         return;
       }
 
-      const loadedSymbols = (items as WatchlistItem[]).map(
+      const symbols = (items as WatchlistItem[]).map(
         (item) => item.symbol
       );
 
-      console.log("User watchlist:", loadedSymbols);
+      // Get current market scores
+      const marketResults = await Promise.all(
+        symbols.map(async (symbol) => {
+          try {
+            const response = await fetch(
+              `/api/market/change-score?symbol=${encodeURIComponent(symbol)}`
+            );
 
-      setSymbols(loadedSymbols);
+            if (!response.ok) return null;
+
+            return (await response.json()) as MarketData;
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      const currentStocks = marketResults.filter(
+        (stock): stock is MarketData => stock !== null
+      );
+
+      // Get previous state
+      const { data: previousStates } = await supabase
+        .from("user_ticker_state")
+        .select("symbol, last_change_score, last_price, last_seen_at")
+        .eq("user_id", user.id);
+
+      const previousMap = new Map(
+        (previousStates ?? []).map((state) => [
+          state.symbol,
+          state,
+        ])
+      );
+
+      // Add "since you left" information
+      const stocksWithDelta = currentStocks.map((stock) => {
+        const previous = previousMap.get(stock.symbol);
+
+        return {
+          ...stock,
+          previousScore: previous?.last_change_score ?? null,
+          previousPrice: previous?.last_price ?? null,
+          lastSeenAt: previous?.last_seen_at ?? null,
+        };
+      });
+
+      console.log("Dashboard market data:", stocksWithDelta);
+
+      setStocks(currentStocks);
+
+      // Send data to Stitch dashboard
+      setTimeout(() => {
+        iframeRef.current?.contentWindow?.postMessage(
+          {
+            type: "MARKET_UPDATE",
+            stocks: stocksWithDelta,
+          },
+          window.location.origin
+        );
+      }, 200);
+
+      // Save current state as the new baseline
+      for (const stock of currentStocks) {
+        await supabase.from("user_ticker_state").upsert(
+          {
+            user_id: user.id,
+            symbol: stock.symbol,
+            last_change_score: stock.changeScore,
+            last_price: stock.currentPrice,
+            last_seen_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "user_id,symbol",
+          }
+        );
+      }
     }
 
-    loadWatchlist();
+    loadDashboard();
   }, []);
-
-  function sendWatchlistToIframe() {
-    if (!iframeRef.current?.contentWindow) {
-      return;
-    }
-
-    console.log(
-      "Sending watchlist to dashboard:",
-      symbols
-    );
-
-    iframeRef.current.contentWindow.postMessage(
-      {
-        type: "WATCHLIST_UPDATE",
-        symbols,
-      },
-      window.location.origin
-    );
-  }
 
   return (
     <main className="min-h-screen bg-black">
@@ -147,7 +182,6 @@ export default function Home() {
         ref={iframeRef}
         src="/dashboard.html"
         title="MarketWatch AI Dashboard"
-        onLoad={sendWatchlistToIframe}
         className="h-screen w-full border-0"
       />
     </main>
