@@ -18,14 +18,11 @@ export default function WatchlistPage() {
   useEffect(() => {
     let active = true;
     let iframeReady = false;
-    let pendingMessage: unknown = null;
     let loading = false;
 
     const send = (message: unknown) => {
-      if (!iframeReady) {
-        pendingMessage = message;
-        return;
-      }
+      if (!iframeReady) return;
+
       iframeRef.current?.contentWindow?.postMessage(
         message,
         window.location.origin
@@ -33,17 +30,29 @@ export default function WatchlistPage() {
     };
 
     const sendProfileUpdate = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (active) {
-        send({
-          type: "PROFILE_UPDATE",
-          email: data.user?.email ?? "MarketWatch Account",
-        });
-      }
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user || !active) return;
+
+      const user = data.user;
+
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.user_metadata?.display_name ||
+        user.email?.split("@")[0] ||
+        "MarketWatch Account";
+
+      send({
+        type: "PROFILE_UPDATE",
+        name,
+        email: user.email ?? "",
+      });
     };
 
     const load = async () => {
-      if (loading) return;
+      if (loading || !active || !iframeReady) return;
+
       loading = true;
 
       try {
@@ -51,64 +60,187 @@ export default function WatchlistPage() {
           await supabase.auth.getUser();
 
         if (userError || !userData.user) {
-          if (active) send({ type: "WATCHLIST_ERROR" });
+          if (active) {
+            send({ type: "WATCHLIST_ERROR" });
+          }
           return;
         }
 
-        const { data: rows, error } = await supabase
-          .from("watchlist_items")
-          .select("id, symbol, watchlists!inner(user_id)")
-          .eq("watchlists.user_id", userData.user.id)
+        const userId = userData.user.id;
+
+        /*
+         * Get all watchlists owned by this user.
+         */
+        const { data: lists, error: listsError } = await supabase
+          .from("watchlists")
+          .select("id")
+          .eq("user_id", userId)
           .order("created_at", { ascending: true });
 
-        if (error) {
-          if (active) send({ type: "WATCHLIST_ERROR" });
+        if (listsError) {
+          console.error("Failed to load watchlists:", listsError);
+
+          if (active) {
+            send({ type: "WATCHLIST_ERROR" });
+          }
+
+          return;
+        }
+
+        const watchlistIds = (lists ?? []).map((list) => list.id);
+
+        /*
+         * No watchlists yet.
+         */
+        if (watchlistIds.length === 0) {
+          if (active) {
+            send({
+              type: "WATCHLIST_UPDATE",
+              items: [],
+            });
+
+            await sendProfileUpdate();
+          }
+
+          return;
+        }
+
+        /*
+         * Get all items from all of the user's watchlists.
+         */
+        const { data: rows, error: itemsError } = await supabase
+          .from("watchlist_items")
+          .select("id, symbol, created_at")
+          .in("watchlist_id", watchlistIds)
+          .order("created_at", { ascending: true });
+
+        if (itemsError) {
+          console.error(
+            "Failed to load watchlist items:",
+            itemsError
+          );
+
+          if (active) {
+            send({ type: "WATCHLIST_ERROR" });
+          }
+
           return;
         }
 
         const symbols = Array.from(
-          new Set((rows ?? []).map((row) => row.symbol.toUpperCase()))
+          new Set(
+            (rows ?? [])
+              .map((row) => String(row.symbol).toUpperCase())
+              .filter(Boolean)
+          )
         );
 
+        /*
+         * No stocks in the watchlist.
+         */
+        if (symbols.length === 0) {
+          if (active) {
+            send({
+              type: "WATCHLIST_UPDATE",
+              items: [],
+            });
+
+            await sendProfileUpdate();
+          }
+
+          return;
+        }
+
+        /*
+         * Fetch quote + change score for every stock.
+         * Promise.allSettled prevents one failed API call
+         * from breaking the entire watchlist.
+         */
         const items: Item[] = await Promise.all(
           symbols.map(async (symbol) => {
-            const [quoteResult, scoreResult] = await Promise.allSettled([
-              fetch(
-                `/api/market/quote?symbol=${encodeURIComponent(symbol)}`,
-                { cache: "no-store" }
-              ).then((r) => r.json()),
-              fetch(
-                `/api/market/change-score?symbol=${encodeURIComponent(symbol)}`,
-                { cache: "no-store" }
-              ).then((r) => r.json()),
-            ]);
+            let quote: any = {};
+            let score: any = {};
 
-            const quote =
-              quoteResult.status === "fulfilled" ? quoteResult.value : {};
-            const score =
-              scoreResult.status === "fulfilled" ? scoreResult.value : {};
+            try {
+              const response = await fetch(
+                `/api/market/quote?symbol=${encodeURIComponent(symbol)}`,
+                {
+                  cache: "no-store",
+                }
+              );
+
+              if (response.ok) {
+                quote = await response.json();
+              } else {
+                console.error(
+                  `Quote API failed for ${symbol}:`,
+                  response.status
+                );
+              }
+            } catch (error) {
+              console.error(
+                `Quote request failed for ${symbol}:`,
+                error
+              );
+            }
+
+            try {
+              const response = await fetch(
+                `/api/market/change-score?symbol=${encodeURIComponent(
+                  symbol
+                )}`,
+                {
+                  cache: "no-store",
+                }
+              );
+
+              if (response.ok) {
+                score = await response.json();
+              } else {
+                console.error(
+                  `Change score API failed for ${symbol}:`,
+                  response.status
+                );
+              }
+            } catch (error) {
+              console.error(
+                `Change score request failed for ${symbol}:`,
+                error
+              );
+            }
+
+            const price = Number(quote.price);
+            const changePercent = Number(quote.changePercent);
+            const changeScore = Number(score.changeScore);
 
             return {
               symbol,
-              price: Number.isFinite(Number(quote.price))
-                ? Number(quote.price)
+              price: Number.isFinite(price) ? price : null,
+              changePercent: Number.isFinite(changePercent)
+                ? changePercent
                 : null,
-              changePercent: Number.isFinite(Number(quote.changePercent))
-                ? Number(quote.changePercent)
-                : null,
-              score: Number(score.changeScore ?? 0),
+              score: Number.isFinite(changeScore)
+                ? changeScore
+                : 0,
               reasons: Array.isArray(score.reasons)
                 ? score.reasons
                 : ["No major changes detected"],
-              companyName: "Market Asset",
+              companyName:
+                quote.companyName ||
+                score.companyName ||
+                "Market Asset",
             };
           })
         );
 
-        if (active) {
-          send({ type: "WATCHLIST_UPDATE", items });
-          await sendProfileUpdate();
-        }
+        if (!active) return;
+
+        send({
+          type: "WATCHLIST_UPDATE",
+          items,
+        });
+
+        await sendProfileUpdate();
       } finally {
         loading = false;
       }
@@ -119,40 +251,90 @@ export default function WatchlistPage() {
 
       const type = event.data?.type;
 
+      /*
+       * Profile requested by the iframe.
+       */
       if (type === "REQUEST_PROFILE") {
         await sendProfileUpdate();
         return;
       }
 
+      /*
+       * Navigate the parent Next.js application,
+       * rather than navigating inside the iframe.
+       */
+      if (type === "NAVIGATE") {
+        const href = String(event.data?.href || "");
+
+        if (
+          href &&
+          href.startsWith("/") &&
+          !href.startsWith("//")
+        ) {
+          window.location.assign(href);
+        }
+
+        return;
+      }
+
+      /*
+       * Sign out.
+       */
       if (type === "SIGN_OUT") {
         await supabase.auth.signOut();
         window.location.replace("/login");
         return;
       }
 
+      /*
+       * Refresh watchlist.
+       */
       if (type === "SYNC_NOW") {
         await load();
-        send({ type: "SYNC_COMPLETE" });
+
+        if (active) {
+          send({ type: "SYNC_COMPLETE" });
+        }
+
         return;
       }
 
+      /*
+       * Add stock.
+       */
       if (type === "ADD_STOCK") {
         const symbol = String(event.data?.symbol || "")
           .trim()
           .toUpperCase();
 
-        if (!symbol || !/^[A-Z0-9.-]{1,15}$/.test(symbol)) return;
+        if (!symbol || !/^[A-Z0-9.-]{1,15}$/.test(symbol)) {
+          return;
+        }
 
-        const { data: userData } = await supabase.auth.getUser();
+        const { data: userData } =
+          await supabase.auth.getUser();
+
         if (!userData.user) return;
 
-        let { data: list } = await supabase
+        /*
+         * Use the first existing watchlist.
+         * If none exists, create one.
+         */
+        let { data: list, error: listError } = await supabase
           .from("watchlists")
           .select("id")
           .eq("user_id", userData.user.id)
           .order("created_at", { ascending: true })
           .limit(1)
           .maybeSingle();
+
+        if (listError) {
+          console.error(
+            "Failed to find watchlist:",
+            listError
+          );
+          return;
+        }
 
         if (!list) {
           const created = await supabase
@@ -164,82 +346,127 @@ export default function WatchlistPage() {
             .select("id")
             .single();
 
-          list = created.data;
-        }
-
-        if (list?.id) {
-          const { error } = await supabase
-            .from("watchlist_items")
-            .insert({
-              watchlist_id: list.id,
-              symbol,
-            });
-
-          if (error && error.code !== "23505") {
-            console.error("Failed to add stock:", error);
+          if (created.error) {
+            console.error(
+              "Failed to create watchlist:",
+              created.error
+            );
             return;
           }
 
-          await load();
+          list = created.data;
         }
 
+        if (!list?.id) return;
+
+        const { error } = await supabase
+          .from("watchlist_items")
+          .insert({
+            watchlist_id: list.id,
+            symbol,
+          });
+
+        /*
+         * 23505 = duplicate stock.
+         * That's okay.
+         */
+        if (error && error.code !== "23505") {
+          console.error(
+            "Failed to add stock:",
+            error
+          );
+          return;
+        }
+
+        await load();
         return;
       }
 
-      if (type !== "REMOVE_STOCK") return;
+      /*
+       * Remove stock.
+       */
+      if (type === "REMOVE_STOCK") {
+        const symbol = String(event.data?.symbol || "")
+          .trim()
+          .toUpperCase();
 
-      const symbol = String(event.data.symbol || "").toUpperCase();
-      if (!symbol) return;
+        if (!symbol) return;
 
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
+        const { data: userData } =
+          await supabase.auth.getUser();
 
-      const { data: lists } = await supabase
-        .from("watchlists")
-        .select("id")
-        .eq("user_id", userData.user.id);
+        if (!userData.user) return;
 
-      const ids = (lists ?? []).map((x) => x.id);
+        const { data: lists, error: listsError } =
+          await supabase
+            .from("watchlists")
+            .select("id")
+            .eq("user_id", userData.user.id);
 
-      if (ids.length) {
-        const { error } = await supabase
-          .from("watchlist_items")
-          .delete()
-          .eq("symbol", symbol)
-          .in("watchlist_id", ids);
-
-        if (error) {
-          console.error("Failed to remove stock:", error);
+        if (listsError) {
+          console.error(
+            "Failed to find watchlists:",
+            listsError
+          );
           return;
         }
-      }
 
-      await load();
+        const ids = (lists ?? []).map((x) => x.id);
+
+        if (ids.length > 0) {
+          const { error } = await supabase
+            .from("watchlist_items")
+            .delete()
+            .eq("symbol", symbol)
+            .in("watchlist_id", ids);
+
+          if (error) {
+            console.error(
+              "Failed to remove stock:",
+              error
+            );
+            return;
+          }
+        }
+
+        await load();
+      }
     };
 
     const iframe = iframeRef.current;
 
-    const onIframeLoad = () => {
+    const onIframeLoad = async () => {
       iframeReady = true;
 
-      if (pendingMessage) {
-        iframe?.contentWindow?.postMessage(
-          pendingMessage,
-          window.location.origin
-        );
-        pendingMessage = null;
-      } else {
-        load();
-      }
+      /*
+       * The iframe is now ready to receive postMessage.
+       */
+      await sendProfileUpdate();
+      await load();
     };
 
     iframe?.addEventListener("load", onIframeLoad);
     window.addEventListener("message", onMessage);
 
+    /*
+     * If the iframe is already loaded when the effect runs.
+     */
+    if (iframe?.contentDocument?.readyState === "complete") {
+      onIframeLoad();
+    }
+
     return () => {
       active = false;
-      iframe?.removeEventListener("load", onIframeLoad);
-      window.removeEventListener("message", onMessage);
+
+      iframe?.removeEventListener(
+        "load",
+        onIframeLoad
+      );
+
+      window.removeEventListener(
+        "message",
+        onMessage
+      );
     };
   }, []);
 

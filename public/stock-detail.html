@@ -208,7 +208,7 @@
 </div>
 <!-- Quick Add Stock CTA -->
 <div class="px-space-xs mb-5">
-<button onclick="location.href='/watchlist'" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/40 hover:border-primary-container transition-all duration-150 active:scale-[0.99] group">
+<button onclick="window.parent.location.href='/watchlist'" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/40 hover:border-primary-container transition-all duration-150 active:scale-[0.99] group">
 <span class="material-symbols-outlined text-sm text-primary" data-icon="add">add</span>
 <span class="hidden md:inline text-label-caps font-label-caps font-semibold tracking-wider uppercase">+ Add Stock</span>
 </button>
@@ -216,12 +216,12 @@
 <!-- Main Navigation Cluster -->
 <nav class="space-y-1">
 <!-- 1. Dashboard (Active Destination) -->
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="/watchlist">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="/">
 <span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span>
 <span class="hidden md:inline font-title-md text-sm font-medium">Dashboard</span>
 </a>
 <!-- 2. Watchlist -->
-<a class="flex items-center justify-between px-3 py-2 rounded-lg text-primary border-l-2 border-primary bg-surface-container-high/40 scale-[0.99] transition-transform duration-100" href="/">
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-primary border-l-2 border-primary bg-surface-container-high/40 scale-[0.99] transition-transform duration-100" href="/watchlist">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-lg" data-icon="monitoring">monitoring</span>
 <span class="hidden md:inline font-title-md text-sm font-medium">Watchlist</span>
@@ -341,7 +341,7 @@ function render(q,s,n){
   <section class="sd-panel sd-pad">
    <div class="flex items-start justify-between gap-4">
     <div class="flex items-center gap-3"><div class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary text-xl font-bold">${symbol==="AAPL"?"A":"◈"}</div><div><div class="flex items-center gap-2 flex-wrap"><h1 class="sd-title text-2xl">${esc(symbol)}</h1><span class="sd-label px-1.5 py-1 border border-outline-variant/30 rounded">MARKET ASSET</span></div><p class="sd-muted text-xs mt-1">${esc(s.companyName||"Live market data")}</p></div></div>
-    <button class="sd-remove" onclick="location.href='/'">Remove</button>
+    <button class="sd-remove" onclick="window.parent.location.href='/'">Remove</button>
    </div>
    <p class="sd-muted text-sm leading-6 mt-4">Current market snapshot for <span class="text-on-surface font-semibold">${esc(symbol)}</span>, using the same Delta Intelligence signals as the dashboard.</p>
    <div class="mt-4 pt-4 border-t border-outline-variant/20 flex items-end gap-4 flex-wrap"><div><span class="sd-price">${money(price)}</span><span class="sd-label ml-1">USD</span></div><div class="sd-mono text-xs ${ch<0?"text-error":"text-secondary"} pb-1">${ch<0?"▼":"▲"} ${pct(cp)} (${ch>=0?"+":""}${Number(ch).toFixed(2)}) today</div></div>
