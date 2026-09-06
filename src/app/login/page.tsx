@@ -1,107 +1,204 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSignup, setIsSignup] = useState(false);
-  const [message, setMessage] = useState("");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    setMessage("");
+  useEffect(() => {
+    const send = (message: Record<string, unknown>) => {
+      iframeRef.current?.contentWindow?.postMessage(
+        message,
+        window.location.origin
+      );
+    };
 
-    if (isSignup) {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+    const checkRecoverySession = async () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("mode") !== "reset") return;
 
-      if (error) {
-        setMessage(error.message);
+      send({ type: "SHOW_RESET" });
+
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        send({
+          type: "AUTH_ERROR",
+          message: "This reset link is invalid or has expired. Request a new one.",
+        });
+      }
+    };
+
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+
+      const data = event.data || {};
+      if (!data.type) return;
+
+      if (data.type === "LOGIN" || data.type === "SIGNUP") {
+        const email = typeof data.email === "string" ? data.email.trim() : "";
+        const password = typeof data.password === "string" ? data.password : "";
+
+        if (!email || !password) {
+          send({
+            type: "AUTH_ERROR",
+            message: "Please enter your email and password.",
+          });
+          return;
+        }
+
+        send({ type: "AUTH_LOADING" });
+
+        try {
+          if (data.type === "SIGNUP") {
+            const { data: signupData, error } = await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                emailRedirectTo: `${window.location.origin}/login`,
+              },
+            });
+
+            if (error) {
+              send({ type: "AUTH_ERROR", message: error.message });
+              send({ type: "AUTH_READY" });
+              return;
+            }
+
+            if (signupData.session) {
+              window.location.replace("/");
+              return;
+            }
+
+            send({
+              type: "AUTH_SUCCESS",
+              message:
+                "Account created. Check your email to verify the account, then sign in.",
+            });
+            send({ type: "AUTH_READY" });
+            return;
+          }
+
+          const { data: loginData, error } =
+            await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+
+          if (error) {
+            const message = error.message
+              .toLowerCase()
+              .includes("email not confirmed")
+              ? "Your email is not verified yet. Check your inbox and confirm your account first."
+              : error.message;
+
+            send({ type: "AUTH_ERROR", message });
+            send({ type: "AUTH_READY" });
+            return;
+          }
+
+          if (loginData.session) {
+            window.location.replace("/");
+            return;
+          }
+
+          send({
+            type: "AUTH_ERROR",
+            message: "No active session was created. Please try again.",
+          });
+          send({ type: "AUTH_READY" });
+        } catch (error) {
+          send({
+            type: "AUTH_ERROR",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Authentication failed. Please try again.",
+          });
+          send({ type: "AUTH_READY" });
+        }
+
         return;
       }
 
-      setMessage(
-        "Account created. Check your email if confirmation is required."
-      );
-      return;
-    }
+      if (data.type === "FORGOT_PASSWORD") {
+        const email = typeof data.email === "string" ? data.email.trim() : "";
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+        if (!email) {
+          send({
+            type: "AUTH_ERROR",
+            message: "Enter your email first, then try again.",
+          });
+          return;
+        }
 
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/login?mode=reset`,
+        });
 
-    window.location.href = "/";
-  }
+        send({
+          type: error ? "AUTH_ERROR" : "AUTH_SUCCESS",
+          message: error
+            ? error.message
+            : "Password reset instructions have been sent to your email.",
+        });
+        return;
+      }
+
+      if (data.type === "UPDATE_PASSWORD") {
+        const password =
+          typeof data.password === "string" ? data.password : "";
+
+        if (!password) {
+          send({
+            type: "AUTH_ERROR",
+            message: "Enter a new password.",
+          });
+          return;
+        }
+
+        send({ type: "AUTH_LOADING" });
+
+        const { data: sessionData } = await supabase.auth.getSession();
+
+        if (!sessionData.session) {
+          send({
+            type: "AUTH_ERROR",
+            message: "Your reset session has expired. Request a new reset email.",
+          });
+          send({ type: "AUTH_READY" });
+          return;
+        }
+
+        const { error } = await supabase.auth.updateUser({ password });
+
+        if (error) {
+          send({ type: "AUTH_ERROR", message: error.message });
+          send({ type: "AUTH_READY" });
+          return;
+        }
+
+        await supabase.auth.signOut();
+        window.location.replace("/login");
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    checkRecoverySession();
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <h1 className="mb-2 text-3xl font-bold">
-          Smart Market Watchlist
-        </h1>
-
-        <p className="mb-6 text-gray-500">
-          {isSignup
-            ? "Create your account"
-            : "Sign in to your watchlist"}
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-            className="w-full rounded-lg border p-3"
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-            minLength={6}
-            className="w-full rounded-lg border p-3"
-          />
-
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-black p-3 text-white"
-          >
-            {isSignup ? "Create account" : "Sign in"}
-          </button>
-        </form>
-
-        {message && (
-          <p className="mt-4 text-sm text-gray-600">
-            {message}
-          </p>
-        )}
-
-        <button
-          onClick={() => {
-            setIsSignup(!isSignup);
-            setMessage("");
-          }}
-          className="mt-4 text-sm underline"
-        >
-          {isSignup
-            ? "Already have an account? Sign in"
-            : "Need an account? Sign up"}
-        </button>
-      </div>
+    <main className="min-h-screen bg-[#0a0e16]">
+      <iframe
+        ref={iframeRef}
+        title="MarketWatch AI Login"
+        src="/login.html"
+        className="block h-screen w-full border-0"
+      />
     </main>
   );
 }

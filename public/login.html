@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarketWatch AI - Secure Access</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0a0e16;
+      color: #dfe2ee;
+      font-family: Geist, sans-serif;
+    }
+    .grid-bg {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.018) 1px, transparent 1px);
+    }
+    .mono { font-family: "JetBrains Mono", monospace; font-feature-settings: "tnum" 1; }
+    .headline { font-family: "Space Grotesk", sans-serif; }
+    .panel {
+      background: rgba(15,19,27,.9);
+      border: 1px solid rgba(255,255,255,.075);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .top-glow { position: relative; }
+    .top-glow::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 14%;
+      right: 14%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,210,255,.7), transparent);
+    }
+    /* Keep Tailwind Forms from turning terminal inputs white. */
+    input.auth-input,
+    input.auth-input[type="email"],
+    input.auth-input[type="password"],
+    input.auth-input:focus {
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #0b0d12 !important;
+      background-image: none !important;
+      color: #f8fafc !important;
+      border-color: rgba(255,255,255,.09) !important;
+      border-width: 1px !important;
+      border-radius: 4px !important;
+      box-shadow: none;
+    }
+
+    input.auth-input:focus {
+      border-color: rgba(0,210,255,.65) !important;
+      box-shadow: 0 0 0 1px rgba(0,210,255,.12), inset 0 0 10px rgba(0,210,255,.045) !important;
+    }
+
+    input.auth-input::placeholder {
+      color: #475569 !important;
+      opacity: 1;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: 'liga';
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .auth-input {
+      background: #0b0d12;
+      border: 1px solid rgba(255,255,255,.09);
+      color: #f8fafc;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .auth-input:focus {
+      border-color: rgba(0,210,255,.65);
+      box-shadow: 0 0 0 1px rgba(0,210,255,.12), inset 0 0 10px rgba(0,210,255,.045);
+    }
+    .auth-input::placeholder { color: #475569; }
+    .auth-button {
+      transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .auth-button:hover {
+      border-color: rgba(0,210,255,.9);
+      background: rgba(0,210,255,.16);
+      box-shadow: 0 0 26px rgba(0,210,255,.16);
+    }
+    .auth-button:active { transform: translateY(1px); }
+  </style>
+</head>
+
+<body>
+  <div class="fixed inset-0 pointer-events-none grid-bg"></div>
+  <div class="fixed -left-48 -top-48 h-[650px] w-[650px] rounded-full bg-[#00d2ff]/[.035] blur-[170px] pointer-events-none"></div>
+  <div class="fixed bottom-[-220px] right-[15%] h-[520px] w-[520px] rounded-full bg-[#00d2ff]/[.02] blur-[160px] pointer-events-none"></div>
+
+  <header class="relative z-10 flex h-[58px] items-center justify-between border-b border-[#3c494e]/20 bg-[#0f131b]/85 px-4 backdrop-blur-md md:px-6">
+    <div class="flex items-center gap-3">
+      <div class="relative flex h-7 w-7 items-center justify-center rounded border border-[#3c494e]/40 bg-[#262a33]">
+        <svg class="h-4 w-4 text-[#a5e7ff]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3L21 19H3L12 3Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+          <path d="M12 9L17 19H7L12 9Z" fill="rgba(0,210,255,.25)" stroke="#00d2ff" stroke-width="1.2"/>
+        </svg>
+        <span class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-[#00d2ff]"></span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="headline text-[18px] font-semibold tracking-tight">MarketWatch AI</span>
+        <span class="mono hidden text-[10px] tracking-wider text-[#bbc9cf]/55 sm:inline">// SMART MARKET TERMINAL</span>
+      </div>
+    </div>
+
+    <div class="hidden items-center gap-5 mono text-[9px] text-[#94a3b8] sm:flex">
+      <span class="flex items-center gap-2">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#4edea3]"></span>
+        MARKET SIGNALS ONLINE
+      </span>
+      <span class="h-3 w-px bg-[#3c494e]/40"></span>
+      <span>SECURE SESSION</span>
+    </div>
+  </header>
+
+  <main class="relative z-10 flex min-h-[calc(100vh-106px)] items-center justify-center px-4 py-10">
+    <section class="w-full max-w-[430px]">
+      <div class="mb-4 text-center">
+        <div class="mono mb-2 text-[9px] uppercase tracking-[.18em] text-[#00d2ff]">CHANGE INTELLIGENCE</div>
+        <h1 class="headline text-[30px] font-medium tracking-tight text-[#dfe2ee] md:text-[32px]">
+          Your market, without the noise.
+        </h1>
+        <p class="mx-auto mt-2 max-w-[350px] text-[12px] leading-5 text-[#64748b]">
+          Track the stocks that matter and see when price, volume, news, or earnings meaningfully change.
+        </p>
+      </div>
+
+      <div class="panel top-glow rounded-lg p-6 shadow-[0_24px_70px_-30px_rgba(0,0,0,.95)] md:p-7">
+        <div class="mb-6 flex items-center justify-between">
+          <div class="mono inline-flex items-center gap-2 rounded border border-[#3c494e]/30 bg-[#262a33]/55 px-2.5 py-1 text-[9px] text-[#a5e7ff]">
+            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00d2ff]"></span>
+            <span id="accessLabel">SECURE ACCESS</span>
+          </div>
+          <span class="mono text-[9px] text-[#475569]">AUTH</span>
+        </div>
+
+        <div class="mb-6">
+          <h2 id="formTitle" class="headline text-[25px] font-medium tracking-tight">Welcome back</h2>
+          <p id="formSubtitle" class="mt-1 text-[12px] leading-5 text-[#64748b]">
+            Sign in to see what changed across your watchlist.
+          </p>
+        </div>
+
+        <div id="resetPanel" class="hidden">
+          <form id="resetForm" class="space-y-4">
+            <div>
+              <label for="newPassword" class="mb-1.5 block text-[10px] font-semibold uppercase tracking-[.08em] text-[#94a3b8]">
+                New password
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-[#475569]">lock</span>
+                <input
+                  id="newPassword"
+                  type="password"
+                  minlength="6"
+                  autocomplete="new-password"
+                  placeholder="Enter your new password"
+                  required
+                  class="auth-input mono w-full rounded py-2.5 pl-9 pr-3 text-[12px]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="newPasswordConfirm" class="mb-1.5 block text-[10px] font-semibold uppercase tracking-[.08em] text-[#94a3b8]">
+                Confirm new password
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-[#475569]">verified_user</span>
+                <input
+                  id="newPasswordConfirm"
+                  type="password"
+                  minlength="6"
+                  autocomplete="new-password"
+                  placeholder="Re-enter your new password"
+                  required
+                  class="auth-input mono w-full rounded py-2.5 pl-9 pr-3 text-[12px]"
+                />
+              </div>
+            </div>
+
+            <button type="submit" id="resetButton" class="auth-button flex w-full items-center justify-between rounded border border-[#00d2ff]/55 bg-[#00d2ff]/10 px-4 py-3">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[19px] text-[#00d2ff]">lock_reset</span>
+                <span class="headline text-[14px] font-medium text-[#dfe2ee]">Update Password</span>
+              </span>
+              <span class="material-symbols-outlined text-[17px] text-[#a5e7ff]">arrow_forward</span>
+            </button>
+          </form>
+
+          <div class="mt-6 border-t border-[#3c494e]/20 pt-4 text-center">
+            <button id="backToLogin" type="button" class="text-[11px] text-[#a5e7ff] underline decoration-[#00d2ff]/30 underline-offset-4">
+              Back to sign in
+            </button>
+          </div>
+        </div>
+
+        <form id="authForm" class="space-y-4">
+          <div>
+            <label for="email" class="mb-1.5 block text-[10px] font-semibold uppercase tracking-[.08em] text-[#94a3b8]">
+              Email
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-[#475569]">mail</span>
+              <input
+                id="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+                class="auth-input mono w-full rounded py-2.5 pl-9 pr-3 text-[12px]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="mb-1.5 flex items-center justify-between">
+              <label for="password" class="text-[10px] font-semibold uppercase tracking-[.08em] text-[#94a3b8]">
+                Password
+              </label>
+              <button id="forgotPassword" type="button" class="text-[10px] text-[#64748b] transition-colors hover:text-[#a5e7ff]">
+                Forgot password?
+              </button>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-[#475569]">lock</span>
+              <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                minlength="6"
+                placeholder="Enter your password"
+                required
+                class="auth-input mono w-full rounded py-2.5 pl-9 pr-11 text-[12px]"
+              />
+              <button id="togglePassword" type="button" aria-label="Show password" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#475569] transition-colors hover:text-[#dfe2ee]">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="confirmWrap" class="hidden">
+            <label for="confirmPassword" class="mb-1.5 block text-[10px] font-semibold uppercase tracking-[.08em] text-[#94a3b8]">
+              Confirm password
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-[#475569]">verified_user</span>
+              <input
+                id="confirmPassword"
+                type="password"
+                autocomplete="new-password"
+                minlength="6"
+                placeholder="Re-enter your password"
+                class="auth-input mono w-full rounded py-2.5 pl-9 pr-11 text-[12px]"
+              />
+              <button id="toggleConfirmPassword" type="button" aria-label="Show password" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#475569] transition-colors hover:text-[#dfe2ee]">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <button id="submitButton" type="submit" class="auth-button flex w-full items-center justify-between rounded border border-[#00d2ff]/55 bg-[#00d2ff]/10 px-4 py-3">
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[19px] text-[#00d2ff]">bolt</span>
+              <span id="submitLabel" class="headline text-[14px] font-medium text-[#dfe2ee]">Enter Terminal</span>
+            </span>
+            <span class="material-symbols-outlined text-[17px] text-[#a5e7ff]">arrow_forward</span>
+          </button>
+        </form>
+
+        <div id="message" class="mono mt-4 hidden rounded border border-[#3c494e]/30 bg-[#181c24]/70 px-3 py-2 text-[10px] leading-4 text-[#a5e7ff]"></div>
+
+        <div class="mt-6 border-t border-[#3c494e]/20 pt-4 text-center">
+          <p class="text-[12px] text-[#64748b]">
+            <span id="modePrompt">New to MarketWatch AI?</span>
+            <button id="modeLink" type="button" class="ml-1 font-medium text-[#a5e7ff] underline decoration-[#00d2ff]/30 underline-offset-4 hover:text-[#47d6ff]">
+              Create an account
+            </button>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center justify-center gap-2 mono text-[8px] tracking-wider text-[#475569]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#4edea3]"></span>
+        PRICE
+        <span class="text-[#313844]">•</span>
+        VOLUME
+        <span class="text-[#313844]">•</span>
+        NEWS
+        <span class="text-[#313844]">•</span>
+        EARNINGS
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative z-10 flex h-[48px] items-center justify-between border-t border-[#3c494e]/20 bg-[#0f131b]/80 px-4 mono text-[8px] text-[#475569] backdrop-blur-md md:px-6">
+    <span class="flex items-center gap-1.5">
+      <span class="h-1.5 w-1.5 rounded-full bg-[#4edea3]"></span>
+      AUTH SERVICE READY
+    </span>
+    <span>MARKETWATCH AI • 2026</span>
+  </footer>
+
+  <script>
+    let isSignup = false;
+    let isLoading = false;
+
+    const $ = (id) => document.getElementById(id);
+    const form = $("authForm");
+    const email = $("email");
+    const password = $("password");
+    const confirmPassword = $("confirmPassword");
+    const confirmWrap = $("confirmWrap");
+    const forgotPassword = $("forgotPassword");
+    const message = $("message");
+
+    function post(type, payload = {}) {
+      window.parent.postMessage({ type, ...payload }, window.location.origin);
+    }
+
+    function showMessage(text) {
+      message.textContent = text;
+      message.classList.remove("hidden");
+    }
+
+    function setMode(signup) {
+      isSignup = signup;
+      message.classList.add("hidden");
+      email.focus();
+
+      $("accessLabel").textContent = signup ? "CREATE ACCOUNT" : "SECURE ACCESS";
+      $("formTitle").textContent = signup ? "Start tracking what matters." : "Welcome back";
+      $("formSubtitle").textContent = signup
+        ? "Create your account and build your personal market watchlist."
+        : "Sign in to see what changed across your watchlist.";
+
+      confirmWrap.classList.toggle("hidden", !signup);
+      confirmPassword.required = signup;
+      forgotPassword.classList.toggle("hidden", signup);
+
+      $("submitLabel").textContent = signup ? "Create Account" : "Enter Terminal";
+      $("modePrompt").textContent = signup ? "Already have an account?" : "New to MarketWatch AI?";
+      $("modeLink").textContent = signup ? "Sign in" : "Create an account";
+      password.autocomplete = signup ? "new-password" : "current-password";
+    }
+
+    $("modeLink").onclick = () => setMode(!isSignup);
+
+    $("togglePassword").onclick = () => {
+      const visible = password.type === "text";
+      password.type = visible ? "password" : "text";
+      $("togglePassword span").textContent = visible ? "visibility" : "visibility_off";
+    };
+
+    $("toggleConfirmPassword").onclick = () => {
+      const visible = confirmPassword.type === "text";
+      confirmPassword.type = visible ? "password" : "text";
+      $("toggleConfirmPassword span").textContent = visible ? "visibility" : "visibility_off";
+    };
+
+    forgotPassword.onclick = () => {
+      const value = email.value.trim();
+      if (!value) {
+        showMessage("Enter your email first, then select Forgot password.");
+        email.focus();
+        return;
+      }
+      post("FORGOT_PASSWORD", { email: value });
+    };
+
+    const resetPanel = $("resetPanel");
+    const resetForm = $("resetForm");
+    const newPassword = $("newPassword");
+    const newPasswordConfirm = $("newPasswordConfirm");
+
+    function showResetMode() {
+      resetPanel.classList.remove("hidden");
+      form.classList.add("hidden");
+      $("accessLabel").textContent = "PASSWORD RECOVERY";
+      $("formTitle").textContent = "Set a new password";
+      $("formSubtitle").textContent = "Choose a new password for your MarketWatch AI account.";
+      message.classList.add("hidden");
+      $("modePrompt").parentElement.classList.add("hidden");
+      forgotPassword.classList.add("hidden");
+      newPassword.focus();
+    }
+
+    $("backToLogin").onclick = () => {
+      window.location.href = "/login";
+    };
+
+    resetForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (newPassword.value !== newPasswordConfirm.value) {
+        showMessage("Passwords do not match.");
+        return;
+      }
+
+      message.classList.add("hidden");
+      post("UPDATE_PASSWORD", { password: newPassword.value });
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (isLoading) return;
+
+      if (isSignup && password.value !== confirmPassword.value) {
+        showMessage("Passwords do not match.");
+        return;
+      }
+
+      message.classList.add("hidden");
+      post(isSignup ? "SIGNUP" : "LOGIN", {
+        email: email.value.trim(),
+        password: password.value
+      });
+    });
+
+    window.addEventListener("message", (event) => {
+      if (event.origin !== window.location.origin) return;
+
+      const data = event.data || {};
+
+      if (data.type === "SHOW_RESET") {
+        showResetMode();
+      }
+
+      if (data.type === "AUTH_LOADING") {
+        isLoading = true;
+        $("submitButton").disabled = true;
+        $("submitButton").classList.add("opacity-60", "cursor-not-allowed");
+        $("submitLabel").textContent = "Authenticating...";
+      }
+
+      if (data.type === "AUTH_READY") {
+        isLoading = false;
+        $("submitButton").disabled = false;
+        $("submitButton").classList.remove("opacity-60", "cursor-not-allowed");
+        $("submitLabel").textContent = isSignup ? "Create Account" : "Enter Terminal";
+      }
+
+      if (data.type === "AUTH_ERROR" || data.type === "AUTH_SUCCESS") {
+        showMessage(data.message || "Authentication completed.");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -26,7 +26,20 @@ export default function WatchlistPage() {
         pendingMessage = message;
         return;
       }
-      iframeRef.current?.contentWindow?.postMessage(message, window.location.origin);
+      iframeRef.current?.contentWindow?.postMessage(
+        message,
+        window.location.origin
+      );
+    };
+
+    const sendProfileUpdate = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (active) {
+        send({
+          type: "PROFILE_UPDATE",
+          email: data.user?.email ?? "MarketWatch Account",
+        });
+      }
     };
 
     const load = async () => {
@@ -34,49 +47,68 @@ export default function WatchlistPage() {
       loading = true;
 
       try {
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData.user) {
-        if (active) send({ type: "WATCHLIST_ERROR" });
-        return;
-      }
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
 
-      const { data: rows, error } = await supabase
-        .from("watchlist_items")
-        .select("id, symbol, watchlists!inner(user_id)")
-        .eq("watchlists.user_id", userData.user.id)
-        .order("created_at", { ascending: true });
+        if (userError || !userData.user) {
+          if (active) send({ type: "WATCHLIST_ERROR" });
+          return;
+        }
 
-      if (error) {
-        if (active) send({ type: "WATCHLIST_ERROR" });
-        return;
-      }
+        const { data: rows, error } = await supabase
+          .from("watchlist_items")
+          .select("id, symbol, watchlists!inner(user_id)")
+          .eq("watchlists.user_id", userData.user.id)
+          .order("created_at", { ascending: true });
 
-      const symbols = Array.from(
-        new Set((rows ?? []).map((row) => row.symbol.toUpperCase()))
-      );
+        if (error) {
+          if (active) send({ type: "WATCHLIST_ERROR" });
+          return;
+        }
 
-      const items: Item[] = await Promise.all(
-        symbols.map(async (symbol) => {
-          const [quoteResult, scoreResult] = await Promise.allSettled([
-            fetch(`/api/market/quote?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" }).then((r) => r.json()),
-            fetch(`/api/market/change-score?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" }).then((r) => r.json()),
-          ]);
+        const symbols = Array.from(
+          new Set((rows ?? []).map((row) => row.symbol.toUpperCase()))
+        );
 
-          const quote = quoteResult.status === "fulfilled" ? quoteResult.value : {};
-          const score = scoreResult.status === "fulfilled" ? scoreResult.value : {};
+        const items: Item[] = await Promise.all(
+          symbols.map(async (symbol) => {
+            const [quoteResult, scoreResult] = await Promise.allSettled([
+              fetch(
+                `/api/market/quote?symbol=${encodeURIComponent(symbol)}`,
+                { cache: "no-store" }
+              ).then((r) => r.json()),
+              fetch(
+                `/api/market/change-score?symbol=${encodeURIComponent(symbol)}`,
+                { cache: "no-store" }
+              ).then((r) => r.json()),
+            ]);
 
-          return {
-            symbol,
-            price: Number.isFinite(Number(quote.price)) ? Number(quote.price) : null,
-            changePercent: Number.isFinite(Number(quote.changePercent)) ? Number(quote.changePercent) : null,
-            score: Number(score.changeScore ?? 0),
-            reasons: Array.isArray(score.reasons) ? score.reasons : ["No major changes detected"],
-            companyName: "Market Asset",
-          };
-        })
-      );
+            const quote =
+              quoteResult.status === "fulfilled" ? quoteResult.value : {};
+            const score =
+              scoreResult.status === "fulfilled" ? scoreResult.value : {};
 
-        if (active) send({ type: "WATCHLIST_UPDATE", items });
+            return {
+              symbol,
+              price: Number.isFinite(Number(quote.price))
+                ? Number(quote.price)
+                : null,
+              changePercent: Number.isFinite(Number(quote.changePercent))
+                ? Number(quote.changePercent)
+                : null,
+              score: Number(score.changeScore ?? 0),
+              reasons: Array.isArray(score.reasons)
+                ? score.reasons
+                : ["No major changes detected"],
+              companyName: "Market Asset",
+            };
+          })
+        );
+
+        if (active) {
+          send({ type: "WATCHLIST_UPDATE", items });
+          await sendProfileUpdate();
+        }
       } finally {
         loading = false;
       }
@@ -87,6 +119,17 @@ export default function WatchlistPage() {
 
       const type = event.data?.type;
 
+      if (type === "REQUEST_PROFILE") {
+        await sendProfileUpdate();
+        return;
+      }
+
+      if (type === "SIGN_OUT") {
+        await supabase.auth.signOut();
+        window.location.replace("/login");
+        return;
+      }
+
       if (type === "SYNC_NOW") {
         await load();
         send({ type: "SYNC_COMPLETE" });
@@ -94,7 +137,10 @@ export default function WatchlistPage() {
       }
 
       if (type === "ADD_STOCK") {
-        const symbol = String(event.data?.symbol || "").trim().toUpperCase();
+        const symbol = String(event.data?.symbol || "")
+          .trim()
+          .toUpperCase();
+
         if (!symbol || !/^[A-Z0-9.-]{1,15}$/.test(symbol)) return;
 
         const { data: userData } = await supabase.auth.getUser();
@@ -111,16 +157,23 @@ export default function WatchlistPage() {
         if (!list) {
           const created = await supabase
             .from("watchlists")
-            .insert({ user_id: userData.user.id, name: "My Watchlist" })
+            .insert({
+              user_id: userData.user.id,
+              name: "My Watchlist",
+            })
             .select("id")
             .single();
+
           list = created.data;
         }
 
         if (list?.id) {
           const { error } = await supabase
             .from("watchlist_items")
-            .insert({ watchlist_id: list.id, symbol });
+            .insert({
+              watchlist_id: list.id,
+              symbol,
+            });
 
           if (error && error.code !== "23505") {
             console.error("Failed to add stock:", error);
@@ -129,6 +182,7 @@ export default function WatchlistPage() {
 
           await load();
         }
+
         return;
       }
 
@@ -146,6 +200,7 @@ export default function WatchlistPage() {
         .eq("user_id", userData.user.id);
 
       const ids = (lists ?? []).map((x) => x.id);
+
       if (ids.length) {
         const { error } = await supabase
           .from("watchlist_items")
@@ -163,6 +218,7 @@ export default function WatchlistPage() {
     };
 
     const iframe = iframeRef.current;
+
     const onIframeLoad = () => {
       iframeReady = true;
 

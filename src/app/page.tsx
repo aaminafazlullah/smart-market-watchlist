@@ -46,6 +46,26 @@ export default function Home() {
       return (watchlists?.watchlist_items ?? []) as WatchlistItem[];
     };
 
+    const sendProfileUpdate = async () => {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+
+      if (error || !user) {
+        console.error("No authenticated user for profile:", error);
+        return;
+      }
+
+      iframeRef.current?.contentWindow?.postMessage(
+        {
+          type: "PROFILE_UPDATE",
+          email: user.email ?? "Authenticated user",
+        },
+        window.location.origin
+      );
+    };
+
     const loadDashboard = async () => {
       console.log("Loading dashboard...");
 
@@ -56,8 +76,18 @@ export default function Home() {
 
       if (userError || !user) {
         console.error("No authenticated user");
+        window.location.replace("/login");
         return;
       }
+
+      // Supply the real Supabase account email to the profile menu.
+      iframeRef.current?.contentWindow?.postMessage(
+        {
+          type: "PROFILE_UPDATE",
+          email: user.email ?? "Authenticated user",
+        },
+        window.location.origin
+      );
 
       const watchlistItems = await getUserWatchlist();
 
@@ -184,12 +214,38 @@ export default function Home() {
 
     syncRef.current = loadDashboard;
 
-    // Initial load. This is the version that was working before
-    // the DASHBOARD_READY / real chronology changes.
-    loadDashboard();
-
     const handleMessage = async (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === "REQUEST_PROFILE") {
+        await sendProfileUpdate();
+        return;
+      }
+
+      if (event.data?.type === "SIGN_OUT") {
+        console.log("SIGN OUT requested");
+
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+          console.error("Sign out failed:", error);
+
+          iframeRef.current?.contentWindow?.postMessage(
+            {
+              type: "SIGN_OUT_ERROR",
+              message: error.message,
+            },
+            window.location.origin
+          );
+
+          return;
+        }
+
+        console.log("Supabase session cleared");
+
+        window.location.replace("/login");
+        return;
+      }
 
       if (event.data?.type === "SYNC_NOW") {
         console.log("SYNC NOW requested");
@@ -306,6 +362,9 @@ export default function Home() {
     };
 
     window.addEventListener("message", handleMessage);
+
+    // Initial load.
+    loadDashboard();
 
     return () => {
       window.removeEventListener("message", handleMessage);

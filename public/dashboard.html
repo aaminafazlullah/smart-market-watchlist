@@ -173,6 +173,30 @@
 <style>
 .glass-panel-interactive[data-symbol] { cursor: pointer; }
 </style>
+
+<style>
+  #profileArea {
+    position: relative;
+  }
+
+  #profileMenu {
+    min-width: 240px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  #profileMenu.hidden {
+    display: none;
+  }
+
+  #profileButton:focus-visible,
+  #signOutButton:focus-visible {
+    outline: 1px solid #00d2ff;
+    outline-offset: 2px;
+  }
+</style>
+
 </head>
 <body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen overflow-x-hidden">
 <!-- SHARED COMPONENT 1: SideNavBar -->
@@ -210,20 +234,7 @@
 <span class="material-symbols-outlined text-lg" data-icon="monitoring">monitoring</span>
 <span class="hidden md:inline font-title-md text-sm font-medium">Watchlist</span>
 </div>
-<span class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-surface-container-highest text-primary">14</span>
-</a>
-<!-- 3. Activity -->
-<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-lg" data-icon="history">history</span>
-<span class="hidden md:inline font-title-md text-sm font-medium">Activity</span>
-</div>
-<span class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-error-container/40 text-error">3 alerts</span>
-</a>
-<!-- 4. Settings -->
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
-<span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
-<span class="hidden md:inline font-title-md text-sm font-medium">Settings</span>
+<span id="sidebar-watchlist-count" class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-surface-container-highest text-primary">0</span>
 </a>
 </nav>
 </div>
@@ -238,15 +249,55 @@
 <span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_6px_#4edea3]"></span>
 </div>
 <!-- User Card -->
-<div class="flex items-center gap-3 p-1.5 rounded-lg hover:bg-surface-container-high/30 transition-colors cursor-pointer">
-<div class="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-outline-variant/50">
-<img class="w-full h-full object-cover" data-alt="Close up photographic portrait of Alex Vance, a focused institutional quantitative portfolio trader in a dark illuminated trading room with reflective glass panels, cool cyan rim lighting, and blurred high frequency financial charts in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHmfTrRMzpOGPtk3vLOOSZohbyaTiVP2qjuY0GQulhMAUGDWpU2w03GcZeluJz1aiXt93EveeP4pP8Vm2QzK3xsccHuQLaBMlqNB4maxVLCDcQHuzpD9EUEZATkl7C7CY5uEZ00S0Pc3SMg0TZSYsNhxIQFazFPOgZ0TlEewKXZKGW6ATNTUD5n0xCo4uOtmUb0bngheLuyPK98fbrsJCnXF3NZsKlLFz04T9mSwMwAxx5BbDl3k3"/>
-<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary border border-surface-container-lowest"></span>
-</div>
-<div class="hidden md:flex flex-col min-w-0">
-<span class="text-label-code font-label-code text-on-surface truncate font-semibold">Alex Vance (Lead Trader)</span>
-<span class="text-label-code font-label-code text-on-surface-variant text-[10px]">Last Synced 2h ago</span>
-</div>
+<div id="profileArea" class="relative">
+  <button
+    id="profileButton"
+    type="button"
+    class="w-full flex items-center gap-3 p-1.5 rounded-lg hover:bg-surface-container-high/30 transition-colors cursor-pointer text-left"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <div class="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-outline-variant/50">
+      <img
+        class="w-full h-full object-cover"
+        data-alt="User profile"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHmfTrRMzpOGPtk3vLOOSZohbyaTiVP2qjuY0GQulhMAUGDWpU2w03GcZeluJz1aiXt93EveeP4pP8Vm2QzK3xsccHuQLaBMlqNB4maxVLCDcQHuzpD9EUEZATkl7C7CY5uEZ00S0Pc3SMg0TZSYsNhxIQFazFPOgZ0TlEewKXZKGW6ATNTUD5n0xCo4uOtmUb0bngheLuyPK98fbrsJCnXF3NZsKlLFz04T9mSwMwAxx5BbDl3k3"
+      />
+      <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary border border-surface-container-lowest"></span>
+    </div>
+
+    <div class="hidden md:flex flex-col min-w-0">
+      <span id="profileName" class="text-label-code font-label-code text-on-surface truncate font-semibold">
+        Account
+      </span>
+      <span id="profileEmail" class="text-label-code font-label-code text-on-surface-variant text-[10px] truncate">
+        Loading...
+      </span>
+    </div>
+  </button>
+
+  <div
+    id="profileMenu"
+    class="hidden absolute left-0 bottom-full mb-2 w-60 p-2 rounded-lg border border-outline-variant/30 bg-surface-container-lowest shadow-2xl z-[100]"
+  >
+    <div class="px-2 py-2 border-b border-outline-variant/20">
+      <div class="text-[9px] uppercase tracking-widest text-on-surface-variant font-mono">
+        Signed in as
+      </div>
+      <div id="profileMenuEmail" class="mt-1 text-[10px] text-on-surface font-mono truncate">
+        Loading...
+      </div>
+    </div>
+
+    <button
+      id="signOutButton"
+      type="button"
+      class="w-full mt-1 flex items-center gap-2 px-2 py-2 rounded-md text-left text-error hover:bg-error/10 transition-colors"
+    >
+      <span class="material-symbols-outlined text-[18px]">logout</span>
+      <span class="text-[10px] font-mono">Sign out</span>
+    </button>
+  </div>
 </div>
 </div>
 </aside>
@@ -267,34 +318,12 @@
 <span>Noise Filter: Active</span>
 </div>
 </div>
-<!-- Middle: Hotkey Search Bar -->
-<div class="flex-1 max-w-md mx-4 hidden md:block">
-<div class="relative flex items-center">
-<span class="material-symbols-outlined absolute left-3 text-outline text-lg" data-icon="search">search</span>
-<input class="w-full h-8 pl-9 pr-12 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-on-surface placeholder-outline font-body-md text-xs focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Query tickers, anomalies, delta events..." type="text"/>
-<kbd class="absolute right-2 text-label-code font-label-code text-[10px] text-outline px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/40">⌘K</kbd>
-</div>
-</div>
 <!-- Right: Action Pills & User Trigger Controls -->
 <div class="flex items-center gap-2.5">
-<!-- Noise Filter Active Pill -->
-<button class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:border-outline text-xs font-label-code">
-<span class="material-symbols-outlined text-primary text-sm" data-icon="filter_list">filter_list</span>
-<span>Threshold: 80+ Score</span>
-</button>
 <!-- Refresh Delta Button (Primary Action) -->
 <button id="sync-now-btn" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/50 hover:shadow-[0_0_12px_rgba(0,210,255,0.3)] text-xs font-title-md transition-all active:opacity-80">
 <span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
 <span class="font-semibold">Sync Now</span>
-</button>
-<!-- Notification Bell with Alert Dot -->
-<button class="relative p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors">
-<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
-<span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error border-2 border-surface"></span>
-</button>
-<!-- Secondary Action: Session Log -->
-<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors" title="Session Log">
-<span class="material-symbols-outlined text-lg" data-icon="tune">tune</span>
 </button>
 </div>
 </header>
@@ -309,9 +338,9 @@
 <span class="inline-flex items-center px-2 py-0.5 rounded text-label-code font-label-code text-[11px] bg-primary-container/10 border border-primary-container/30 text-primary uppercase">
                 INTELLIGENCE SUMMARY
               </span>
-<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-label-code font-label-code text-[11px] bg-surface-container-high/50 text-on-surface-variant border border-outline-variant/30">
-<span class="material-symbols-outlined text-xs text-secondary" data-icon="check_circle">check_circle</span>
-                Filtered out 412 low-signal market events
+<span id="signal-summary-chip" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-label-code font-label-code text-[11px] bg-surface-container-high/50 text-on-surface-variant border border-outline-variant/30">
+<span class="material-symbols-outlined text-xs text-secondary">check_circle</span>
+                Waiting for live market data
               </span>
 </div>
 <h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
@@ -323,11 +352,7 @@
 </div>
 <!-- Micro Quick Filter or Timeline Jump -->
 <div class="flex items-center gap-2">
-<span class="text-label-code font-label-code text-xs text-outline">Sensitivity:</span>
-<div class="inline-flex p-0.5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-xs font-label-code">
-<button class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-medium">Elevated (&gt;70)</button>
-<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface">Extreme (&gt;85)</button>
-</div>
+<span class="text-label-code font-label-code text-xs text-outline">Ranked by attention score</span>
 </div>
 </div>
 <!-- 3 Feature Anomaly Cards (Dynamic) -->
@@ -338,78 +363,35 @@
 </div>
 </section>
 <!-- ================= SECTION 2: DELTA TIMELINE ================= -->
-<section class="glass-panel rounded-xl p-space-md space-y-4">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 pb-3">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-base" data-icon="timeline">timeline</span>
-<h2 class="text-title-md font-title-md font-semibold text-on-surface">Delta Chronology: What Happened While You Were Away</h2>
-</div>
-<span class="text-label-code font-label-code text-xs text-outline">Interval Window: 10:42 AM – 12:56 PM EST</span>
-</div>
-<!-- Horizontal Timeline Vector -->
-<div class="relative py-4 px-2">
-<!-- Central Connecting Line -->
-<div class="absolute top-1/2 left-4 right-4 h-0.5 -translate-y-1/2 bg-gradient-to-r from-outline-variant/40 via-primary/50 to-secondary/50 hidden md:block"></div>
-<!-- Nodes Matrix -->
-<div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative z-10">
-<!-- Node 1: Session Ended -->
-<div class="flex flex-col md:items-center text-left md:text-center space-y-1.5 p-2 rounded-lg bg-surface-container-lowest/60 border border-outline-variant/20">
-<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline flex items-center justify-center mx-auto mb-1 shadow-[0_0_8px_rgba(255,255,255,0.1)]">
-<span class="w-2 h-2 rounded-full bg-outline"></span>
-</div>
-<span class="text-label-code font-label-code text-xs text-on-surface-variant font-medium">10:42 AM</span>
-<span class="text-title-md text-xs font-semibold text-on-surface">Session Suspended</span>
-<p class="text-body-md text-[11px] text-outline">Market benchmark S&amp;P 500 at 5,082.10</p>
-</div>
-<!-- Node 2: TSLA Break -->
-<div class="flex flex-col md:items-center text-left md:text-center space-y-1.5 p-2 rounded-lg bg-surface-container-lowest/60 border border-error/30">
-<div class="w-6 h-6 rounded-full bg-error-container/40 border border-error flex items-center justify-center mx-auto mb-1">
-<span class="w-2 h-2 rounded-full bg-error"></span>
-</div>
-<div class="flex items-center gap-1">
-<span class="text-label-code font-label-code text-xs text-error font-medium">10:54 AM</span>
-<span class="text-label-code font-label-code text-[10px] px-1 rounded bg-error/15 text-error">Score 74</span>
-</div>
-<span class="text-title-md text-xs font-semibold text-on-surface">TSLA Breaks Support</span>
-<p class="text-body-md text-[11px] text-on-surface-variant leading-tight">Cracks $180 psychological wall (-3.15%)</p>
-</div>
-<!-- Node 3: AAPL Block Sell (PEAK) -->
-<div class="flex flex-col md:items-center text-left md:text-center space-y-1.5 p-2 rounded-lg bg-error-container/10 border border-error/50 relative">
-<span class="absolute -top-2 px-1.5 py-0.2 rounded text-label-code font-label-code text-[9px] bg-error text-on-error font-bold uppercase tracking-wider">Peak Anomaly</span>
-<div class="w-6 h-6 rounded-full bg-error flex items-center justify-center mx-auto mb-1 animate-pulse shadow-[0_0_12px_#ffb4ab]">
-<span class="w-2 h-2 rounded-full bg-on-error"></span>
-</div>
-<div class="flex items-center gap-1">
-<span class="text-label-code font-label-code text-xs text-error font-medium">11:38 AM</span>
-<span class="text-label-code font-label-code text-[10px] px-1 rounded bg-error text-on-error font-bold">Score 82</span>
-</div>
-<span class="text-title-md text-xs font-semibold text-error">AAPL 1.4M Block Sell</span>
-<p class="text-body-md text-[11px] text-on-surface-variant leading-tight">Sudden 3.8x volume spike &amp; assembly notice</p>
-</div>
-<!-- Node 4: NVDA Surge -->
-<div class="flex flex-col md:items-center text-left md:text-center space-y-1.5 p-2 rounded-lg bg-surface-container-lowest/60 border border-primary-container/40">
-<div class="w-6 h-6 rounded-full bg-primary-container/20 border border-primary-container flex items-center justify-center mx-auto mb-1">
-<span class="w-2 h-2 rounded-full bg-primary-container"></span>
-</div>
-<div class="flex items-center gap-1">
-<span class="text-label-code font-label-code text-xs text-primary font-medium">12:10 PM</span>
-<span class="text-label-code font-label-code text-[10px] px-1 rounded bg-primary-container/20 text-primary">Score 78</span>
-</div>
-<span class="text-title-md text-xs font-semibold text-on-surface">NVDA Enterprise Leak</span>
-<p class="text-body-md text-[11px] text-on-surface-variant leading-tight">H200 delivery acceleration (+4.82%)</p>
-</div>
-<!-- Node 5: Current Live Sync -->
-<div class="flex flex-col md:items-center text-left md:text-center space-y-1.5 p-2 rounded-lg bg-surface-container-lowest/60 border border-secondary/30">
-<div class="w-6 h-6 rounded-full bg-secondary/20 border border-secondary flex items-center justify-center mx-auto mb-1">
-<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
-</div>
-<span class="text-label-code font-label-code text-xs text-secondary font-medium">12:56 PM (Now)</span>
-<span class="text-title-md text-xs font-semibold text-on-surface">Synchronized Delta</span>
-<p class="text-body-md text-[11px] text-secondary leading-tight">All real-time feeds active &amp; filtered</p>
-</div>
-</div>
-</div>
+<section id="delta-timeline-section" class="glass-panel rounded-xl p-space-md space-y-4">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 pb-3">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary text-base">timeline</span>
+      <h2 class="text-title-md font-title-md font-semibold text-on-surface">
+        Recent Delta Activity
+      </h2>
+    </div>
+
+    <span id="timeline-status" class="text-label-code font-label-code text-xs text-outline">
+      Waiting for live data
+    </span>
+  </div>
+
+  <div id="timeline-content" class="py-8 text-center">
+    <span class="material-symbols-outlined text-outline text-3xl">
+      timeline
+    </span>
+
+    <div class="text-on-surface font-semibold mt-2">
+      No market activity to show
+    </div>
+
+    <div class="text-outline text-sm mt-1">
+      Add stocks to your watchlist to see meaningful changes here.
+    </div>
+  </div>
 </section>
+
 <!-- ================= SECTION 3: WATCHLIST SECTION ================= -->
 <section class="glass-panel rounded-xl p-space-md space-y-4">
 <!-- Watchlist Control Header -->
@@ -917,6 +899,122 @@
     tbody.innerHTML = "";
 
     const count = stocks.length;
+
+    // Keep the sidebar badge tied to the real Supabase watchlist.
+    const sidebarCount = document.getElementById("sidebar-watchlist-count");
+    if (sidebarCount) {
+      sidebarCount.textContent = String(count);
+    }
+
+    // Keep the timeline honest: never show Stitch/demo events.
+    const timelineSection = document.getElementById("delta-timeline-section");
+    const timelineContent = document.getElementById("timeline-content");
+    const timelineStatus = document.getElementById("timeline-status");
+
+    if (timelineContent) {
+      if (count === 0) {
+        timelineContent.innerHTML = `
+          <span class="material-symbols-outlined text-outline text-3xl">
+            timeline
+          </span>
+          <div class="text-on-surface font-semibold mt-2">
+            No market activity to show
+          </div>
+          <div class="text-outline text-sm mt-1">
+            Add stocks to your watchlist to see meaningful changes here.
+          </div>
+        `;
+
+        if (timelineStatus) {
+          timelineStatus.textContent = "No assets monitored";
+        }
+      } else {
+        const activeChanges = stocks.filter((stock) => {
+          return Number(stock.changeScore || 0) >= 30;
+        });
+
+        timelineContent.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            ${
+              (activeChanges.length ? activeChanges : stocks)
+                .slice(0, 3)
+                .map((stock) => {
+                  const symbol = String(stock.symbol || "").toUpperCase();
+                  const score = Number(stock.changeScore || 0);
+                  const change = Number(stock.changePercent || 0);
+                  const severity = String(stock.severity || "LOW").toUpperCase();
+
+                  const scoreClass =
+                    score >= 80
+                      ? "text-error"
+                      : score >= 60
+                        ? "text-primary"
+                        : score >= 30
+                          ? "text-on-surface"
+                          : "text-outline";
+
+                  return `
+                    <div
+                      data-symbol="${escapeHtml(symbol)}"
+                      class="rounded-lg bg-surface-container-lowest/60
+                      border border-outline-variant/20 p-4 text-left
+                      hover:border-primary-container/30 transition-colors"
+                    >
+                      <div class="flex items-center justify-between">
+                        <span class="font-semibold text-on-surface">
+                          ${escapeHtml(symbol)}
+                        </span>
+                        <span class="text-label-code ${scoreClass}">
+                          ${score} ${escapeHtml(severity)}
+                        </span>
+                      </div>
+
+                      <div class="text-xs text-on-surface-variant mt-2">
+                        ${
+                          change >= 0 ? "▲" : "▼"
+                        } ${
+                          change >= 0 ? "+" : ""
+                        }${change.toFixed(2)}% session move
+                      </div>
+
+                      <div class="text-[10px] text-outline mt-2">
+                        ${Array.isArray(stock.reasons) && stock.reasons.length
+                          ? escapeHtml(stock.reasons[0])
+                          : "No major driver detected"}
+                      </div>
+                    </div>
+                  `;
+                })
+                .join("")
+            }
+          </div>
+        `;
+
+        if (timelineStatus) {
+          timelineStatus.textContent =
+            `${count} monitored asset${count === 1 ? "" : "s"}`;
+        }
+      }
+    }
+
+    // Update the live signal summary chip.
+    const signalChip = document.getElementById("signal-summary-chip");
+    if (signalChip) {
+      const meaningfulCount = stocks.filter((stock) => {
+        return Number(stock.changeScore || 0) >= 30;
+      }).length;
+
+      signalChip.innerHTML = `
+        <span class="material-symbols-outlined text-xs text-secondary">
+          check_circle
+        </span>
+        ${
+          count === 0
+            ? "No assets monitored"
+            : `${meaningfulCount} meaningful signal${meaningfulCount === 1 ? "" : "s"} detected`
+        }
+      `;
+    }
 
     // Update the visible watchlist count.
     document.querySelectorAll("span").forEach((element) => {
@@ -1799,6 +1897,94 @@ document.addEventListener("click", (event) => {
 
   window.location.href = `/stock/${encodeURIComponent(symbol.toUpperCase())}`;
 });
+</script>
+
+
+<script>
+/* ============================================================
+   PROFILE MENU
+   The parent Next.js page supplies the authenticated email
+   and handles the real Supabase sign-out.
+============================================================ */
+(function () {
+  const profileButton = document.getElementById("profileButton");
+  const profileMenu = document.getElementById("profileMenu");
+  const profileName = document.getElementById("profileName");
+  const profileEmail = document.getElementById("profileEmail");
+  const profileMenuEmail = document.getElementById("profileMenuEmail");
+  const signOutButton = document.getElementById("signOutButton");
+
+  if (
+    !profileButton ||
+    !profileMenu ||
+    !profileName ||
+    !profileEmail ||
+    !profileMenuEmail ||
+    !signOutButton
+  ) {
+    return;
+  }
+
+  function toggleProfileMenu(force) {
+    const shouldOpen =
+      typeof force === "boolean"
+        ? force
+        : profileMenu.classList.contains("hidden");
+
+    profileMenu.classList.toggle("hidden", !shouldOpen);
+    profileButton.setAttribute("aria-expanded", String(shouldOpen));
+  }
+
+  profileButton.addEventListener("click", function (event) {
+    event.stopPropagation();
+    toggleProfileMenu();
+  });
+
+  profileMenu.addEventListener("click", function (event) {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", function () {
+    toggleProfileMenu(false);
+  });
+
+  window.addEventListener("message", function (event) {
+    if (event.origin !== window.location.origin) return;
+
+    if (event.data?.type === "PROFILE_UPDATE") {
+      const email = event.data.email || "Authenticated user";
+
+      profileName.textContent = "Account";
+      profileEmail.textContent = email;
+      profileMenuEmail.textContent = email;
+    }
+
+    if (event.data?.type === "SIGN_OUT_ERROR") {
+      signOutButton.disabled = false;
+      signOutButton.style.opacity = "1";
+
+      console.error(
+        "Sign out failed:",
+        event.data.message || "Unknown error"
+      );
+    }
+  });
+
+  signOutButton.addEventListener("click", function () {
+    signOutButton.disabled = true;
+    signOutButton.style.opacity = "0.5";
+
+    window.parent.postMessage(
+      { type: "SIGN_OUT" },
+      window.location.origin
+    );
+  });
+
+  window.parent.postMessage(
+    { type: "REQUEST_PROFILE" },
+    window.location.origin
+  );
+})();
 </script>
 
 </body>
