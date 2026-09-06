@@ -1,0 +1,350 @@
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MarketWatch AI - Delta Intelligence Engine</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Space Grotesk, Geist, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#181c24",
+            "on-surface-variant": "#bbc9cf",
+            "surface-dim": "#0f131b",
+            "tertiary-fixed": "#e1e0ff",
+            "primary-fixed": "#b6ebff",
+            "primary": "#a5e7ff",
+            "on-background": "#dfe2ee",
+            "surface-container": "#1c2028",
+            "on-surface": "#dfe2ee",
+            "on-primary-fixed-variant": "#004e60",
+            "surface-container-highest": "#31353e",
+            "on-primary": "#003543",
+            "on-secondary-container": "#00311f",
+            "surface-tint": "#47d6ff",
+            "tertiary-fixed-dim": "#c0c1ff",
+            "on-tertiary-container": "#3838c6",
+            "on-secondary-fixed-variant": "#005236",
+            "on-error": "#690005",
+            "surface": "#0f131b",
+            "outline": "#859399",
+            "on-tertiary-fixed": "#07006c",
+            "secondary-fixed": "#6ffbbe",
+            "tertiary-container": "#babbff",
+            "secondary-container": "#00a572",
+            "on-primary-container": "#00566a",
+            "error": "#ffb4ab",
+            "on-tertiary-fixed-variant": "#2f2ebe",
+            "surface-variant": "#31353e",
+            "surface-container-lowest": "#0a0e16",
+            "on-tertiary": "#1000a9",
+            "secondary-fixed-dim": "#4edea3",
+            "tertiary": "#dad9ff",
+            "error-container": "#93000a",
+            "on-error-container": "#ffdad6",
+            "outline-variant": "#3c494e",
+            "on-primary-fixed": "#001f28",
+            "primary-fixed-dim": "#47d6ff",
+            "secondary": "#4edea3",
+            "inverse-primary": "#00677f",
+            "primary-container": "#00d2ff",
+            "inverse-on-surface": "#2c3039",
+            "surface-container-high": "#262a33",
+            "inverse-surface": "#dfe2ee",
+            "on-secondary": "#003824",
+            "background": "#0f131b",
+            "on-secondary-fixed": "#002113",
+            "surface-bright": "#353942"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "panel-padding-compact": "0.75rem",
+            "gutter-panel": "0.75rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "panel-padding-default": "1.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xxs": "0.125rem",
+            "grid-margin-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "grid-margin-desktop": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Space Grotesk"],
+            "data-display-sm": ["Geist"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "body-lg": ["Geist"],
+            "body-md": ["Geist"],
+            "label-caps": ["Geist"],
+            "label-code": ["JetBrains Mono"],
+            "data-display-lg": ["Geist"],
+            "headline-xl": ["Space Grotesk"],
+            "title-md": ["Geist"]
+          },
+          "fontSize": {
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.025em", "fontWeight": "500" }],
+            "data-display-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.03em", "fontWeight": "500" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-caps": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "label-code": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "data-display-lg": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.04em", "fontWeight": "600" }],
+            "headline-xl": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.015em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .glass-panel {
+      background: rgba(20, 25, 35, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-panel-interactive {
+      background: rgba(20, 25, 35, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-panel-interactive:hover {
+      background: rgba(24, 30, 42, 0.88);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 0 24px -4px rgba(0, 210, 255, 0.08);
+    }
+    .specular-rim-cyan {
+      position: relative;
+    }
+    .specular-rim-cyan::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.6), transparent);
+    }
+    .specular-rim-rose {
+      position: relative;
+    }
+    .specular-rim-rose::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 180, 171, 0.7), transparent);
+    }
+  </style>
+</head>
+<style>
+.stock-page{width:100%;min-width:0}
+.sd-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.75fr);gap:16px}
+.sd-panel{background:rgba(19,26,36,.72);border:1px solid rgba(70,83,98,.38);border-radius:10px}
+.sd-pad{padding:18px}
+.sd-label{font-family:"JetBrains Mono",monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#82909e}
+.sd-title{font-family:"Space Grotesk",sans-serif;color:#edf5ff}
+.sd-mono{font-family:"JetBrains Mono",monospace}
+.sd-price{font:700 38px "Space Grotesk",sans-serif;letter-spacing:-1px;color:#edf5ff}
+.sd-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+.sd-stat{padding:10px 12px;border:1px solid rgba(70,83,98,.38);background:rgba(9,14,22,.5);border-radius:7px}
+.sd-stat b{display:block;margin-top:5px;color:#e6edf5;font:600 13px "JetBrains Mono",monospace}
+.sd-score-row{display:flex;align-items:center;gap:14px;margin:16px 0}
+.sd-ring{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;position:relative;flex:none;background:conic-gradient(#00d2ff var(--score),rgba(65,79,94,.45) 0)}
+.sd-ring:after{content:"";position:absolute;inset:8px;border-radius:50%;background:#101721}
+.sd-ring-inner{position:relative;z-index:1;text-align:center}.sd-ring-inner strong{font:700 25px "Space Grotesk";color:#eef6ff}.sd-ring-inner span{display:block;font:9px "JetBrains Mono";color:#7d8b99}
+.sd-severity{display:inline-flex;padding:6px 8px;border-radius:4px;font:600 10px "JetBrains Mono";border:1px solid rgba(0,210,255,.35);color:#00d2ff;background:rgba(0,210,255,.06)}
+.sd-signals{display:grid;gap:8px}.sd-signal{display:grid;grid-template-columns:1fr auto;padding:9px 10px;border:1px solid rgba(70,83,98,.34);background:rgba(9,14,22,.48);border-radius:6px}.sd-signal strong{font-size:12px;color:#e3ebf4}.sd-signal small{display:block;margin-top:2px;color:#72808f;font:9px "JetBrains Mono"}.sd-signal b{font:600 12px "JetBrains Mono";color:#bfefff}
+.sd-section{margin-top:16px}.sd-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(70,83,98,.28)}.sd-head h2{margin:0;font:600 16px "Space Grotesk";color:#e9f1f9}
+.sd-driver-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px 16px}.sd-driver{padding:12px;border:1px solid rgba(70,83,98,.34);background:rgba(9,14,22,.45);border-radius:7px}.sd-driver b{display:block;margin:8px 0 3px;font:600 18px "JetBrains Mono";color:#e9f3fb}.sd-bar{height:4px;background:#202b36;border-radius:4px;margin-top:9px;overflow:hidden}.sd-bar i{display:block;height:100%;background:#00d2ff}
+.sd-reasons{padding:0 16px 16px;display:grid;gap:8px}.sd-reason{display:flex;gap:9px;padding:9px 10px;border-radius:6px;background:rgba(0,210,255,.045);border:1px solid rgba(0,210,255,.14);color:#aebbc7;font-size:12px}.sd-dot{width:6px;height:6px;margin-top:5px;border-radius:50%;background:#00d2ff;flex:none}
+.sd-bottom{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.75fr);gap:16px}.sd-news{padding:12px 16px 16px;display:grid;gap:8px}.sd-article{padding:11px;border:1px solid rgba(70,83,98,.34);background:rgba(9,14,22,.45);border-radius:6px}.sd-article-top{display:flex;justify-content:space-between;gap:10px;color:#778695;font:9px "JetBrains Mono"}.sd-article h3{margin:6px 0 0;font-size:12px;line-height:1.4;color:#e1eaf3}
+.sd-side-stack{display:grid;gap:16px}.sd-side{padding:16px}.sd-side h3{margin:0 0 12px;font:600 15px "Space Grotesk";color:#e9f1f9}.sd-earnings{padding:14px;border:1px solid rgba(0,210,255,.18);background:rgba(0,210,255,.045);border-radius:7px}.sd-earnings b{display:block;font:700 25px "Space Grotesk";color:#eaf7ff}
+.sd-key{display:grid;gap:9px}.sd-key-row{display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid rgba(70,83,98,.25);font-size:11px}.sd-key-row:last-child{border:0}.sd-key-row span{color:#83919f}.sd-key-row b{font:600 11px "JetBrains Mono";color:#cfe7f2}
+.sd-remove{border:1px solid rgba(70,83,98,.5);background:rgba(12,18,27,.65);color:#aebbc7;border-radius:6px;padding:8px 10px;font:10px "JetBrains Mono";cursor:pointer}.sd-remove:hover{color:#ff9da2;border-color:rgba(255,104,112,.55)}
+@media(max-width:1100px){.sd-grid,.sd-bottom{grid-template-columns:1fr}.sd-driver-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.sd-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sd-driver-grid{grid-template-columns:1fr}}
+</style>
+<body class="bg-surface text-on-surface font-body-md">
+<aside class="fixed left-0 top-0 bottom-0 z-40 flex flex-col justify-between p-panel-padding-compact docked left top-0 bottom-0 h-screen w-16 md:w-64 bg-surface-container-lowest border-r border-outline-variant/20">
+<!-- Top Area: Brand & Context -->
+<div>
+<!-- Brand Emblem Header -->
+<div class="flex items-center gap-3 px-space-xs py-space-sm mb-4">
+<div class="relative flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-high border border-outline-variant/40 flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="change_history">change_history</span>
+<div class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-[0_0_8px_#00d2ff]"></div>
+</div>
+<div class="hidden md:flex flex-col overflow-hidden">
+<span class="text-title-md font-title-md font-semibold text-primary tracking-tight truncate">MarketWatch AI</span>
+<span class="text-label-code font-label-code text-on-surface-variant/80">Delta Intelligence v2.4</span>
+</div>
+</div>
+<!-- Quick Add Stock CTA -->
+<div class="px-space-xs mb-5">
+<button onclick="location.href='/'" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/40 hover:border-primary-container transition-all duration-150 active:scale-[0.99] group">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="add">add</span>
+<span class="hidden md:inline text-label-caps font-label-caps font-semibold tracking-wider uppercase">+ Add Stock</span>
+</button>
+</div>
+<!-- Main Navigation Cluster -->
+<nav class="space-y-1">
+<!-- 1. Dashboard (Active Destination) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="/">
+<span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Dashboard</span>
+</a>
+<!-- 2. Watchlist -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-primary border-l-2 border-primary bg-surface-container-high/40 scale-[0.99] transition-transform duration-100" href="/">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="monitoring">monitoring</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Watchlist</span>
+</div>
+<span class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-surface-container-highest text-primary">14</span>
+</a>
+<!-- 3. Activity -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="history">history</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Activity</span>
+</div>
+<span class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-error-container/40 text-error">3 alerts</span>
+</a>
+<!-- 4. Settings -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Footer Profile Area -->
+<div class="pt-3 border-t border-outline-variant/20 space-y-2">
+<!-- Sync Engine Status -->
+<div class="hidden md:flex items-center justify-between px-3 py-1.5 rounded bg-surface-container-low/60 border border-outline-variant/15">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm animate-spin" data-icon="sync" style="animation-duration: 8s;">sync</span>
+<span class="text-label-code font-label-code text-on-surface-variant">Sync Engine Active</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_6px_#4edea3]"></span>
+</div>
+<!-- User Card -->
+<div class="flex items-center gap-3 p-1.5 rounded-lg hover:bg-surface-container-high/30 transition-colors cursor-pointer">
+<div class="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-outline-variant/50">
+<img class="w-full h-full object-cover" data-alt="Close up photographic portrait of Alex Vance, a focused institutional quantitative portfolio trader in a dark illuminated trading room with reflective glass panels, cool cyan rim lighting, and blurred high frequency financial charts in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHmfTrRMzpOGPtk3vLOOSZohbyaTiVP2qjuY0GQulhMAUGDWpU2w03GcZeluJz1aiXt93EveeP4pP8Vm2QzK3xsccHuQLaBMlqNB4maxVLCDcQHuzpD9EUEZATkl7C7CY5uEZ00S0Pc3SMg0TZSYsNhxIQFazFPOgZ0TlEewKXZKGW6ATNTUD5n0xCo4uOtmUb0bngheLuyPK98fbrsJCnXF3NZsKlLFz04T9mSwMwAxx5BbDl3k3"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary border border-surface-container-lowest"></span>
+</div>
+<div class="hidden md:flex flex-col min-w-0">
+<span class="text-label-code font-label-code text-on-surface truncate font-semibold">Alex Vance (Lead Trader)</span>
+<span class="text-label-code font-label-code text-on-surface-variant text-[10px]">Last Synced 2h ago</span>
+</div>
+</div>
+</div>
+</aside>
+<div class="pl-16 md:pl-64 flex flex-col min-h-screen">
+<header class="sticky top-0 z-30 flex items-center justify-between px-space-md w-full h-14 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20">
+<!-- Left: Session Status & Inactive Context Markers -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_6px_#4edea3]"></span>
+<span class="text-label-code font-label-code text-on-surface text-xs font-medium">Active Session</span>
+<span class="text-outline-variant">·</span>
+<span id="stock-context" class="text-label-code font-label-code text-on-surface-variant text-xs">Stock Detail · IST</span>
+</div>
+<div class="hidden xl:flex items-center gap-2 text-label-code font-label-code text-primary bg-primary-container/10 px-2 py-0.5 rounded border border-primary-container/30">
+<span class="material-symbols-outlined text-xs" data-icon="tune">tune</span>
+<span>Noise Filter: Active</span>
+</div>
+</div>
+<!-- Middle: Hotkey Search Bar -->
+<div class="flex-1 max-w-md mx-4 hidden md:block">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-lg" data-icon="search">search</span>
+<input class="w-full h-8 pl-9 pr-12 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-on-surface placeholder-outline font-body-md text-xs focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search another ticker..." type="text"/>
+<kbd class="absolute right-2 text-label-code font-label-code text-[10px] text-outline px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/40">⌘K</kbd>
+</div>
+</div>
+<!-- Right: Action Pills & User Trigger Controls -->
+<div class="flex items-center gap-2.5">
+<!-- Noise Filter Active Pill -->
+<button class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:border-outline text-xs font-label-code">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="filter_list">filter_list</span>
+<span>Threshold: 80+ Score</span>
+</button>
+<!-- Refresh Delta Button (Primary Action) -->
+<button id="sync-now-btn" onclick="load()" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/50 hover:shadow-[0_0_12px_rgba(0,210,255,0.3)] text-xs font-title-md transition-all active:opacity-80">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+<span class="font-semibold">Sync Now</span>
+</button>
+<!-- Notification Bell with Alert Dot -->
+<button class="relative p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error border-2 border-surface"></span>
+</button>
+<!-- Secondary Action: Session Log -->
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors" title="Session Log">
+<span class="material-symbols-outlined text-lg" data-icon="tune">tune</span>
+</button>
+</div>
+</header>
+<main class="p-space-md md:p-space-lg max-w-[1600px] mx-auto w-full">
+<div id="stock-app" class="stock-page"></div>
+</main>
+</div>
+<script>
+const symbol=(new URLSearchParams(location.search).get("symbol")||"AAPL").toUpperCase();
+const app=document.getElementById("stock-app");
+const money=n=>Number.isFinite(Number(n))?`$${Number(n).toFixed(2)}`:"--";
+const pct=n=>Number.isFinite(Number(n))?`${Number(n)>=0?"+":""}${Number(n).toFixed(2)}%`:"--";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ist=ts=>{const d=new Date(ts);return Number.isNaN(d.getTime())?"--":new Intl.DateTimeFormat("en-IN",{timeZone:"Asia/Kolkata",hour:"numeric",minute:"2-digit",hour12:true}).format(d)+" IST"};
+const ago=ts=>{if(!ts)return"--";const m=Math.max(0,Math.floor((Date.now()-new Date(ts).getTime())/60000));return m<1?"just now":m<60?m+"m ago":Math.floor(m/60)+"h ago"};
+async function getJson(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw Error(r.status);return r.json()}
+function render(q,s,n){
+ const price=Number(q.price??s.currentPrice),ch=Number(q.change??0),cp=Number(q.changePercent??s.changePercent??0),score=Number(s.changeScore??0);
+ const sev=score>=80?"CRITICAL":score>=60?"HIGH":score>=30?"MEDIUM":"LOW";
+ const sig=[["Price Movement",s.signals?.price??0,"40% weight"],["Volume Anomaly",s.signals?.volume??0,"25% weight"],["News Activity",s.signals?.news??0,"20% weight"],["Earnings & Events",s.signals?.earnings??0,"15% weight"]];
+ const reasons=Array.isArray(s.reasons)&&s.reasons.length?s.reasons:["No major changes detected"];
+ const news=Array.isArray(n?.news)?n.news.slice(0,5):[];
+ app.innerHTML=`
+ <div class="flex items-center justify-between mb-4"><a href="/" class="sd-mono text-xs text-on-surface-variant hover:text-primary">← Dashboard / <span class="text-primary font-semibold">${esc(symbol)}</span></a><span class="sd-label">Live stock intelligence · IST</span></div>
+ <div class="sd-grid">
+  <section class="sd-panel sd-pad">
+   <div class="flex items-start justify-between gap-4">
+    <div class="flex items-center gap-3"><div class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary text-xl font-bold">${symbol==="AAPL"?"A":"◈"}</div><div><div class="flex items-center gap-2 flex-wrap"><h1 class="sd-title text-2xl">${esc(symbol)}</h1><span class="sd-label px-1.5 py-1 border border-outline-variant/30 rounded">MARKET ASSET</span></div><p class="sd-muted text-xs mt-1">${esc(s.companyName||"Live market data")}</p></div></div>
+    <button class="sd-remove" onclick="location.href='/'">Remove</button>
+   </div>
+   <p class="sd-muted text-sm leading-6 mt-4">Current market snapshot for <span class="text-on-surface font-semibold">${esc(symbol)}</span>, using the same Delta Intelligence signals as the dashboard.</p>
+   <div class="mt-4 pt-4 border-t border-outline-variant/20 flex items-end gap-4 flex-wrap"><div><span class="sd-price">${money(price)}</span><span class="sd-label ml-1">USD</span></div><div class="sd-mono text-xs ${ch<0?"text-error":"text-secondary"} pb-1">${ch<0?"▼":"▲"} ${pct(cp)} (${ch>=0?"+":""}${Number(ch).toFixed(2)}) today</div></div>
+   <div class="sd-stat-grid"><div class="sd-stat"><span class="sd-label">Day High</span><b>${money(q.high)}</b></div><div class="sd-stat"><span class="sd-label">Day Low</span><b>${money(q.low)}</b></div><div class="sd-stat"><span class="sd-label">Previous Close</span><b>${money(q.previousClose)}</b></div><div class="sd-stat"><span class="sd-label">Last Updated</span><b>${ist(new Date())}</b></div></div>
+  </section>
+  <section class="sd-panel sd-pad"><div class="flex justify-between"><span class="sd-label">AI Attention Score</span><span class="sd-label text-primary">Explainable</span></div><div class="sd-score-row"><div class="sd-ring" style="--score:${score*3.6}deg"><div class="sd-ring-inner"><strong>${score}</strong><span>/100</span></div></div><div><span class="sd-severity">${sev} ATTENTION</span><p class="sd-muted text-xs leading-5 mt-2">${esc(reasons[0])}</p></div></div><div class="sd-signals">${sig.map(x=>`<div class="sd-signal"><div><strong>${esc(x[0])}</strong><small>${esc(x[2])}</small></div><b>${Number(x[1])}/100</b></div>`).join("")}</div></section>
+ </div>
+ <section class="sd-panel sd-section"><div class="sd-head"><h2>What is driving this score?</h2><span class="sd-label">${reasons.length} detected reasons</span></div><div class="sd-driver-grid">${sig.map(x=>`<div class="sd-driver"><span class="sd-label">${esc(x[0])}</span><b>${Number(x[1])}/100</b><span class="sd-muted text-[11px]">Contribution to the current attention score.</span><div class="sd-bar"><i style="width:${Number(x[1])}%"></i></div></div>`).join("")}</div><div class="sd-reasons">${reasons.map(r=>`<div class="sd-reason"><span class="sd-dot"></span><span>${esc(r)}</span></div>`).join("")}</div></section>
+ <div class="sd-bottom sd-section"><section class="sd-panel"><div class="sd-head"><h2>Recent News</h2><span class="sd-label">${news.length} latest items</span></div><div class="sd-news">${news.length?news.map(i=>{const t=i.datetime?new Date(Number(i.datetime)*1000).toISOString():i.publishedAt||i.timestamp;return `<article class="sd-article"><div class="sd-article-top"><span>${esc(i.source||"Market Feed")}</span><span>${esc(ago(t))} · ${esc(ist(t))}</span></div><h3>${esc(i.headline||i.title||"Market update")}</h3></article>`}).join(""):`<div class="sd-muted text-xs p-4">No recent news returned.</div>`}</div></section><div class="sd-side-stack"><section class="sd-panel sd-side"><h3>Upcoming Earnings</h3><div class="sd-earnings"><b>${s.daysUntilEarnings!=null&&Number(s.daysUntilEarnings)>=0?esc(s.daysUntilEarnings)+" days":"Not available"}</b><span class="sd-muted text-xs">${s.daysUntilEarnings!=null?"Earnings proximity is included in the score.":"No earnings date returned."}</span></div></section><section class="sd-panel sd-side"><h3>Signal Summary</h3><div class="sd-key"><div class="sd-key-row"><span>Historical volatility</span><b>${s.historicalVolatility!=null?Number(s.historicalVolatility).toFixed(2)+"%":"--"}</b></div><div class="sd-key-row"><span>Recent news count</span><b>${s.newsCount??news.length}</b></div><div class="sd-key-row"><span>Severity</span><b>${sev}</b></div><div class="sd-key-row"><span>Data status</span><b class="text-secondary">LIVE</b></div></div></section></div></div>`;
+}
+async function load(){app.innerHTML='<div class="sd-panel p-8 text-center sd-mono text-xs text-on-surface-variant">Loading '+esc(symbol)+' market data...</div>';const [q,s,n]=await Promise.allSettled([getJson('/api/market/quote?symbol='+encodeURIComponent(symbol)),getJson('/api/market/change-score?symbol='+encodeURIComponent(symbol)),getJson('/api/market/news?symbol='+encodeURIComponent(symbol))]);if(s.status!=="fulfilled"){app.innerHTML='<div class="sd-panel p-8 text-center sd-mono text-xs text-error">Unable to load the Change Score. Try Sync Now.</div>';return}render(q.status==="fulfilled"?q.value:{},s.value,n.status==="fulfilled"?n.value:[])}
+load();
+</script>
+</body>

@@ -1,0 +1,362 @@
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MarketWatch AI - Delta Intelligence Engine</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Space Grotesk, Geist, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#181c24",
+            "on-surface-variant": "#bbc9cf",
+            "surface-dim": "#0f131b",
+            "tertiary-fixed": "#e1e0ff",
+            "primary-fixed": "#b6ebff",
+            "primary": "#a5e7ff",
+            "on-background": "#dfe2ee",
+            "surface-container": "#1c2028",
+            "on-surface": "#dfe2ee",
+            "on-primary-fixed-variant": "#004e60",
+            "surface-container-highest": "#31353e",
+            "on-primary": "#003543",
+            "on-secondary-container": "#00311f",
+            "surface-tint": "#47d6ff",
+            "tertiary-fixed-dim": "#c0c1ff",
+            "on-tertiary-container": "#3838c6",
+            "on-secondary-fixed-variant": "#005236",
+            "on-error": "#690005",
+            "surface": "#0f131b",
+            "outline": "#859399",
+            "on-tertiary-fixed": "#07006c",
+            "secondary-fixed": "#6ffbbe",
+            "tertiary-container": "#babbff",
+            "secondary-container": "#00a572",
+            "on-primary-container": "#00566a",
+            "error": "#ffb4ab",
+            "on-tertiary-fixed-variant": "#2f2ebe",
+            "surface-variant": "#31353e",
+            "surface-container-lowest": "#0a0e16",
+            "on-tertiary": "#1000a9",
+            "secondary-fixed-dim": "#4edea3",
+            "tertiary": "#dad9ff",
+            "error-container": "#93000a",
+            "on-error-container": "#ffdad6",
+            "outline-variant": "#3c494e",
+            "on-primary-fixed": "#001f28",
+            "primary-fixed-dim": "#47d6ff",
+            "secondary": "#4edea3",
+            "inverse-primary": "#00677f",
+            "primary-container": "#00d2ff",
+            "inverse-on-surface": "#2c3039",
+            "surface-container-high": "#262a33",
+            "inverse-surface": "#dfe2ee",
+            "on-secondary": "#003824",
+            "background": "#0f131b",
+            "on-secondary-fixed": "#002113",
+            "surface-bright": "#353942"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "panel-padding-compact": "0.75rem",
+            "gutter-panel": "0.75rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "panel-padding-default": "1.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xxs": "0.125rem",
+            "grid-margin-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "grid-margin-desktop": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Space Grotesk"],
+            "data-display-sm": ["Geist"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "body-lg": ["Geist"],
+            "body-md": ["Geist"],
+            "label-caps": ["Geist"],
+            "label-code": ["JetBrains Mono"],
+            "data-display-lg": ["Geist"],
+            "headline-xl": ["Space Grotesk"],
+            "title-md": ["Geist"]
+          },
+          "fontSize": {
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.025em", "fontWeight": "500" }],
+            "data-display-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.03em", "fontWeight": "500" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-caps": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "label-code": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "data-display-lg": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.04em", "fontWeight": "600" }],
+            "headline-xl": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.015em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .glass-panel {
+      background: rgba(20, 25, 35, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-panel-interactive {
+      background: rgba(20, 25, 35, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-panel-interactive:hover {
+      background: rgba(24, 30, 42, 0.88);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 0 24px -4px rgba(0, 210, 255, 0.08);
+    }
+    .specular-rim-cyan {
+      position: relative;
+    }
+    .specular-rim-cyan::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.6), transparent);
+    }
+    .specular-rim-rose {
+      position: relative;
+    }
+    .specular-rim-rose::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 180, 171, 0.7), transparent);
+    }
+  </style>
+</head>
+<style>
+.wl-card{background:rgba(20,25,35,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.07);border-radius:.5rem}
+.wl-card:hover{background:rgba(24,30,42,.88);border-color:rgba(255,255,255,.16);box-shadow:0 0 24px -4px rgba(0,210,255,.08)}
+.wl-table{width:100%;border-collapse:collapse}.wl-table th{text-align:left;font:600 10px "Geist";letter-spacing:.08em;text-transform:uppercase;color:#475569;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)}.wl-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,.04);color:#dfe2ee;font-size:12px}.wl-table tr.stock-row{cursor:pointer}.wl-table tr.stock-row:hover{background:rgba(255,255,255,.025)}
+.wl-score{display:inline-flex;align-items:center;gap:6px;padding:4px 7px;border:1px solid rgba(0,210,255,.22);background:rgba(0,210,255,.06);font:600 10px "JetBrains Mono";color:#a5e7ff;border-radius:4px}
+.wl-delta-pos{color:#4edea3}.wl-delta-neg{color:#ffb4ab}.wl-muted{color:#94a3b8}.wl-actions{display:flex;gap:6px;justify-content:flex-end}.wl-btn{height:28px;padding:0 9px;border:1px solid rgba(255,255,255,.08);background:rgba(11,13,18,.5);color:#bbc9cf;border-radius:4px;font:500 10px "JetBrains Mono";cursor:pointer}.wl-btn:hover{border-color:rgba(0,210,255,.45);color:#a5e7ff}.wl-remove:hover{border-color:rgba(244,63,94,.45);color:#ffb4ab}
+.wl-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wl-stat{padding:12px;border:1px solid rgba(255,255,255,.07);background:rgba(14,18,26,.55);border-radius:6px}.wl-stat .value{font:600 18px "JetBrains Mono";color:#f8fafc;margin-top:5px}.wl-empty{padding:45px 20px;text-align:center;color:#94a3b8}.wl-loading{padding:35px;text-align:center;color:#94a3b8;font:11px "JetBrains Mono"}
+@media(max-width:800px){.wl-table th:nth-child(3),.wl-table td:nth-child(3),.wl-table th:nth-child(5),.wl-table td:nth-child(5){display:none}.wl-stat-grid{grid-template-columns:1fr}.wl-table td,.wl-table th{padding:9px 7px}}
+</style>
+<body class="bg-surface text-on-surface font-body-md">
+<aside class="fixed left-0 top-0 bottom-0 z-40 flex flex-col justify-between p-panel-padding-compact docked left top-0 bottom-0 h-screen w-16 md:w-64 bg-surface-container-lowest border-r border-outline-variant/20">
+<!-- Top Area: Brand & Context -->
+<div>
+<!-- Brand Emblem Header -->
+<div class="flex items-center gap-3 px-space-xs py-space-sm mb-4">
+<div class="relative flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-high border border-outline-variant/40 flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="change_history">change_history</span>
+<div class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-[0_0_8px_#00d2ff]"></div>
+</div>
+<div class="hidden md:flex flex-col overflow-hidden">
+<span class="text-title-md font-title-md font-semibold text-primary tracking-tight truncate">MarketWatch AI</span>
+<span class="text-label-code font-label-code text-on-surface-variant/80">Delta Intelligence v2.4</span>
+</div>
+</div>
+<!-- Quick Add Stock CTA -->
+<div class="px-space-xs mb-5">
+<button onclick="addStock()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/40 hover:border-primary-container transition-all duration-150 active:scale-[0.99] group">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="add">add</span>
+<span class="hidden md:inline text-label-caps font-label-caps font-semibold tracking-wider uppercase">+ Add Stock</span>
+</button>
+</div>
+<!-- Main Navigation Cluster -->
+<nav class="space-y-1">
+<!-- 1. Dashboard (Active Destination) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="/">
+<span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Dashboard</span>
+</a>
+<!-- 2. Watchlist -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-primary border-l-2 border-primary bg-surface-container-high/40 scale-[0.99] transition-transform duration-100" href="/watchlist">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="monitoring">monitoring</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Watchlist</span>
+</div>
+<span class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-surface-container-highest text-primary">14</span>
+</a>
+<!-- 3. Activity -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="history">history</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Activity</span>
+</div>
+<span class="hidden md:inline text-label-code font-label-code px-1.5 py-0.5 rounded bg-error-container/40 text-error">3 alerts</span>
+</a>
+<!-- 4. Settings -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
+<span class="hidden md:inline font-title-md text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Footer Profile Area -->
+<div class="pt-3 border-t border-outline-variant/20 space-y-2">
+<!-- Sync Engine Status -->
+<div class="hidden md:flex items-center justify-between px-3 py-1.5 rounded bg-surface-container-low/60 border border-outline-variant/15">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm animate-spin" data-icon="sync" style="animation-duration: 8s;">sync</span>
+<span class="text-label-code font-label-code text-on-surface-variant">Sync Engine Active</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_6px_#4edea3]"></span>
+</div>
+<!-- User Card -->
+<div class="flex items-center gap-3 p-1.5 rounded-lg hover:bg-surface-container-high/30 transition-colors cursor-pointer">
+<div class="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-outline-variant/50">
+<img class="w-full h-full object-cover" data-alt="Close up photographic portrait of Alex Vance, a focused institutional quantitative portfolio trader in a dark illuminated trading room with reflective glass panels, cool cyan rim lighting, and blurred high frequency financial charts in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHmfTrRMzpOGPtk3vLOOSZohbyaTiVP2qjuY0GQulhMAUGDWpU2w03GcZeluJz1aiXt93EveeP4pP8Vm2QzK3xsccHuQLaBMlqNB4maxVLCDcQHuzpD9EUEZATkl7C7CY5uEZ00S0Pc3SMg0TZSYsNhxIQFazFPOgZ0TlEewKXZKGW6ATNTUD5n0xCo4uOtmUb0bngheLuyPK98fbrsJCnXF3NZsKlLFz04T9mSwMwAxx5BbDl3k3"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary border border-surface-container-lowest"></span>
+</div>
+<div class="hidden md:flex flex-col min-w-0">
+<span class="text-label-code font-label-code text-on-surface truncate font-semibold">Alex Vance (Lead Trader)</span>
+<span class="text-label-code font-label-code text-on-surface-variant text-[10px]">Last Synced 2h ago</span>
+</div>
+</div>
+</div>
+</aside>
+<div class="pl-16 md:pl-64 flex flex-col min-h-screen">
+<header class="sticky top-0 z-30 flex items-center justify-between px-space-md w-full h-14 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20">
+<!-- Left: Session Status & Inactive Context Markers -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_6px_#4edea3]"></span>
+<span class="text-label-code font-label-code text-on-surface text-xs font-medium">Active Session</span>
+<span class="text-outline-variant">·</span>
+<span class="text-label-code font-label-code text-on-surface-variant text-xs">Since you left: 2h 14m ago</span>
+</div>
+<div class="hidden xl:flex items-center gap-2 text-label-code font-label-code text-primary bg-primary-container/10 px-2 py-0.5 rounded border border-primary-container/30">
+<span class="material-symbols-outlined text-xs" data-icon="tune">tune</span>
+<span>Noise Filter: Active</span>
+</div>
+</div>
+<!-- Middle: Hotkey Search Bar -->
+<div class="flex-1 max-w-md mx-4 hidden md:block">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-lg" data-icon="search">search</span>
+<input class="w-full h-8 pl-9 pr-12 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-on-surface placeholder-outline font-body-md text-xs focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Query tickers, anomalies, delta events..." type="text"/>
+<kbd class="absolute right-2 text-label-code font-label-code text-[10px] text-outline px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/40">⌘K</kbd>
+</div>
+</div>
+<!-- Right: Action Pills & User Trigger Controls -->
+<div class="flex items-center gap-2.5">
+<!-- Noise Filter Active Pill -->
+<button class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:border-outline text-xs font-label-code">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="filter_list">filter_list</span>
+<span>Threshold: 80+ Score</span>
+</button>
+<!-- Refresh Delta Button (Primary Action) -->
+<button id="sync-now-btn" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/50 hover:shadow-[0_0_12px_rgba(0,210,255,0.3)] text-xs font-title-md transition-all active:opacity-80">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+<span class="font-semibold">Sync Now</span>
+</button>
+<!-- Notification Bell with Alert Dot -->
+<button class="relative p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error border-2 border-surface"></span>
+</button>
+<!-- Secondary Action: Session Log -->
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors" title="Session Log">
+<span class="material-symbols-outlined text-lg" data-icon="tune">tune</span>
+</button>
+</div>
+</header>
+<main class="p-space-md md:p-space-lg max-w-[1600px] mx-auto w-full">
+  <div class="flex items-start justify-between gap-4 mb-5">
+    <div>
+      <div class="text-label-caps font-label-caps text-primary mb-1">MARKET MONITOR</div>
+      <h1 class="text-headline-lg font-headline-lg text-on-surface">Your Watchlist</h1>
+      <p class="text-sm text-on-surface-variant mt-1">Manage the assets you want Delta Intelligence to monitor.</p>
+    </div>
+    <button onclick="addStock()" class="shrink-0 flex items-center gap-2 py-2 px-3 rounded bg-primary-container/15 hover:bg-primary-container/25 text-primary border border-primary-container/40 text-label-caps font-label-caps">
+      <span class="material-symbols-outlined text-sm">add</span> Add Stock
+    </button>
+  </div>
+
+  <div class="wl-stat-grid mb-4">
+    <div class="wl-stat"><div class="text-label-caps font-label-caps text-on-surface-variant">Assets Monitored</div><div id="asset-count" class="value">--</div></div>
+    <div class="wl-stat"><div class="text-label-caps font-label-caps text-on-surface-variant">Elevated Attention</div><div id="elevated-count" class="value">--</div></div>
+    <div class="wl-stat"><div class="text-label-caps font-label-caps text-on-surface-variant">Last Sync</div><div id="last-sync" class="value text-base">--</div></div>
+  </div>
+
+  <section class="wl-card overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20">
+      <div><h2 class="text-title-md font-title-md font-semibold">Monitored Assets</h2><p class="text-xs text-on-surface-variant mt-1">Live watchlist state and explainable attention signals.</p></div>
+      <span id="status" class="text-label-code font-label-code text-secondary">SYNCING</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="wl-table">
+        <thead><tr><th>Asset</th><th>Price</th><th>Session Delta</th><th>Attention Score</th><th>Drivers</th><th>Action</th></tr></thead>
+        <tbody id="watchlist-body"><tr><td colspan="6"><div class="wl-loading">Loading your watchlist...</div></td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</div>
+<script>
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>Number.isFinite(Number(n))?`$${Number(n).toFixed(2)}`:"--";
+const pct=n=>Number.isFinite(Number(n))?`${Number(n)>=0?"+":""}${Number(n).toFixed(2)}%`:"--";
+function addStock(){
+  const value=window.prompt("Enter a stock ticker (for example AAPL):");
+  const symbol=(value||"").trim().toUpperCase();
+  if(!symbol)return;
+  window.parent.postMessage({type:"ADD_STOCK",symbol},window.location.origin);
+}
+function render(items){
+ const body=document.getElementById("watchlist-body");
+ document.getElementById("asset-count").textContent=items.length;
+ document.getElementById("elevated-count").textContent=items.filter(x=>Number(x.score)>=60).length;
+ document.getElementById("last-sync").textContent=new Intl.DateTimeFormat("en-IN",{timeZone:"Asia/Kolkata",hour:"numeric",minute:"2-digit",hour12:true}).format(new Date())+" IST";
+ document.getElementById("status").textContent="LIVE";
+ if(!items.length){body.innerHTML='<tr><td colspan="6"><div class="wl-empty">Your watchlist is empty.<br><button onclick="addStock()" class="wl-btn mt-3">+ Add your first stock</button></div></td></tr>';return}
+ body.innerHTML=items.map(x=>{
+   const d=Number(x.changePercent||0), score=Number(x.score||0);
+   const sev=score>=80?"CRITICAL":score>=60?"HIGH":score>=30?"MEDIUM":"LOW";
+   return `<tr class="stock-row" data-symbol="${esc(x.symbol)}">
+    <td><div class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant/30 flex items-center justify-center font-semibold text-primary">${esc(x.symbol.slice(0,2))}</div><div><div class="font-semibold">${esc(x.symbol)}</div><div class="wl-muted text-[10px]">${esc(x.companyName||"Market Asset")}</div></div></div></td>
+    <td><span class="font-semibold">${money(x.price)}</span></td>
+    <td class="${d<0?"wl-delta-neg":"wl-delta-pos"} font-mono">${d<0?"▼":"▲"} ${pct(d)}</td>
+    <td><span class="wl-score">${score} · ${sev}</span></td>
+    <td class="max-w-[420px]"><span class="wl-muted">${esc((x.reasons||["No major changes detected"]).slice(0,2).join(" · "))}</span></td>
+    <td><div class="wl-actions"><button class="wl-btn" data-view="${esc(x.symbol)}">View</button><button class="wl-btn wl-remove" data-remove="${esc(x.symbol)}">Remove</button></div></td>
+   </tr>`;
+ }).join("");
+}
+document.addEventListener("click",e=>{
+ const t=e.target instanceof Element?e.target:null;if(!t)return;
+ const view=t.closest("[data-view]"); if(view){e.stopPropagation();location.href="/stock/"+encodeURIComponent(view.getAttribute("data-view"));return}
+ const rem=t.closest("[data-remove]"); if(rem){e.stopPropagation();window.parent.postMessage({type:"REMOVE_STOCK",symbol:rem.getAttribute("data-remove")},window.location.origin);return}
+ const row=t.closest("[data-symbol]"); if(row){location.href="/stock/"+encodeURIComponent(row.getAttribute("data-symbol"))}
+});
+window.addEventListener("message",e=>{if(e.origin!==location.origin)return;if(e.data?.type==="WATCHLIST_UPDATE")render(e.data.items||[]);if(e.data?.type==="WATCHLIST_ERROR"){document.getElementById("status").textContent="ERROR";document.getElementById("watchlist-body").innerHTML='<tr><td colspan="6"><div class="wl-empty text-error">Unable to load your watchlist.</div></td></tr>';}});
+</script>
+</body>

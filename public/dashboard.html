@@ -160,6 +160,19 @@
       background: linear-gradient(90deg, transparent, rgba(255, 180, 171, 0.7), transparent);
     }
   </style>
+
+<style>
+[data-symbol], [data-stock-symbol], [data-ticker], [data-symbol-card] {
+  cursor: pointer;
+}
+[data-symbol]:hover, [data-stock-symbol]:hover, [data-ticker]:hover, [data-symbol-card]:hover {
+  border-color: rgba(0, 210, 255, 0.35) !important;
+}
+</style>
+
+<style>
+.glass-panel-interactive[data-symbol] { cursor: pointer; }
+</style>
 </head>
 <body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen overflow-x-hidden">
 <!-- SHARED COMPONENT 1: SideNavBar -->
@@ -187,12 +200,12 @@
 <!-- Main Navigation Cluster -->
 <nav class="space-y-1">
 <!-- 1. Dashboard (Active Destination) -->
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary border-l-2 border-primary bg-surface-container-high/40 scale-[0.99] transition-transform duration-100" href="#">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary border-l-2 border-primary bg-surface-container-high/40 scale-[0.99] transition-transform duration-100" href="/">
 <span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span>
 <span class="hidden md:inline font-title-md text-sm font-medium">Dashboard</span>
 </a>
 <!-- 2. Watchlist -->
-<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="#">
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 transition-colors duration-150" href="/watchlist">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-lg" data-icon="monitoring">monitoring</span>
 <span class="hidden md:inline font-title-md text-sm font-medium">Watchlist</span>
@@ -675,7 +688,7 @@
             circumference;
 
         return `
-          <div class="glass-panel-interactive ${theme.rim} rounded-xl p-space-md flex flex-col justify-between relative overflow-hidden">
+          <div data-symbol="${escapeHtml(symbol)}" class="glass-panel-interactive ${theme.rim} rounded-xl p-space-md flex flex-col justify-between relative overflow-hidden">
             <div class="space-y-3.5">
 
               <div class="flex items-start justify-between">
@@ -830,244 +843,28 @@
 
   document.addEventListener("click", (event) => {
     const target = event.target;
-
     if (!(target instanceof Element)) return;
 
-    const button = target.closest(
-      "[data-inspect-symbol]"
-    );
-
-    if (!button) return;
-
-    const symbol =
-      button.getAttribute("data-inspect-symbol");
-
-    if (!symbol) return;
-
-    const cards =
-      document.querySelectorAll(
-        "#since-you-left-cards > div"
-      );
-
-    let selectedCard = null;
-
-    cards.forEach((card) => {
-      if (
-        card.textContent?.includes(symbol)
-      ) {
-        selectedCard = card;
+    // Inspect Tape has an explicit ticker, so use it directly.
+    const inspectButton = target.closest("[data-inspect-symbol]");
+    if (inspectButton) {
+      const symbol = inspectButton.getAttribute("data-inspect-symbol");
+      if (symbol) {
+        window.location.href = `/stock/${encodeURIComponent(symbol)}`;
       }
-    });
+      return;
+    }
 
-    if (!selectedCard) return;
+    // Otherwise, clicking anywhere on a stock card opens its detail page.
+    // Ignore buttons/links so existing controls keep their behavior.
+    if (target.closest("button, a")) return;
 
-    const modal =
-      document.createElement("div");
+    const card = target.closest("[data-symbol]");
+    if (!card) return;
 
-    modal.className =
-      "fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-6";
-
-    modal.innerHTML = `
-      <div class="w-full max-w-lg rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-2xl">
-
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <div class="text-primary text-xs uppercase tracking-widest font-bold">
-              Since You Last Looked
-            </div>
-
-            <h2 class="text-2xl font-bold text-on-surface mt-1">
-              ${escapeHtml(symbol)}
-            </h2>
-          </div>
-
-          <button
-            id="close-dynamic-tape"
-            class="text-outline hover:text-on-surface text-xl"
-          >
-            ×
-          </button>
-        </div>
-
-        <div class="text-sm text-on-surface-variant">
-          ${escapeHtml(selectedCard.textContent || "")}
-        </div>
-
-        <button
-          id="close-dynamic-tape-bottom"
-          class="w-full mt-6 rounded-lg bg-primary-container py-3 text-on-primary font-semibold"
-        >
-          Close Inspection
-        </button>
-      </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    modal.querySelector(
-      "#close-dynamic-tape"
-    ).onclick = () => modal.remove();
-
-    modal.querySelector(
-      "#close-dynamic-tape-bottom"
-    ).onclick = () => modal.remove();
-
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        modal.remove();
-      }
-    });
-  });
-})();
-</script>
-<script>
-  // Make "Inspect Tape" buttons functional
-  document.querySelectorAll("button").forEach((button) => {
-    if (button.textContent.includes("Inspect Tape")) {
-      button.addEventListener("click", () => {
-        const card = button.closest(".glass-panel-interactive");
-
-        if (!card) return;
-
-        const symbol =
-          card.querySelector(".font-headline-sm")?.textContent?.trim() ||
-          "Stock";
-
-        const price =
-          card.querySelector(".text-data-display-sm")?.textContent?.trim() ||
-          "N/A";
-
-        const scoreElements = card.querySelectorAll("span");
-
-        let score = "N/A";
-        let severity = "N/A";
-
-        scoreElements.forEach((element) => {
-          const text = element.textContent?.trim();
-
-          if (/^\d+$/.test(text)) {
-            const number = Number(text);
-
-            if (number >= 0 && number <= 100) {
-              score = text;
-            }
-          }
-
-          if (["LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(text)) {
-            severity = text;
-          }
-        });
-
-        const reasons = Array.from(
-          card.querySelectorAll(".text-body-md")
-        )
-          .map((element) => element.textContent?.trim())
-          .filter(Boolean)
-          .slice(0, 4);
-
-        const modal = document.createElement("div");
-
-        modal.className =
-          "fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-6";
-
-        modal.innerHTML = `
-          <div class="w-full max-w-lg rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-2xl">
-
-            <div class="flex items-start justify-between mb-6">
-              <div>
-                <div class="text-primary text-xs uppercase tracking-widest font-bold">
-                  Tape Inspection
-                </div>
-
-                <h2 class="text-2xl font-bold text-on-surface mt-1">
-                  ${symbol}
-                </h2>
-
-                <div class="text-on-surface-variant text-sm mt-1">
-                  Current price: ${price}
-                </div>
-              </div>
-
-              <button
-                id="close-tape"
-                class="text-outline hover:text-on-surface text-xl"
-              >
-                ×
-              </button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 mb-6">
-              <div class="rounded-lg bg-surface-container p-4">
-                <div class="text-outline text-xs uppercase">
-                  Change Score
-                </div>
-                <div class="text-3xl font-bold text-primary mt-1">
-                  ${score}
-                </div>
-              </div>
-
-              <div class="rounded-lg bg-surface-container p-4">
-                <div class="text-outline text-xs uppercase">
-                  Severity
-                </div>
-                <div class="text-xl font-bold text-error mt-3">
-                  ${severity}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div class="text-xs uppercase tracking-widest text-outline mb-3">
-                Why it changed
-              </div>
-
-              <div class="space-y-2">
-                ${
-                  reasons.length
-                    ? reasons
-                        .map(
-                          (reason) => `
-                            <div class="rounded-lg bg-surface-container p-3 text-sm text-on-surface-variant">
-                              ${reason}
-                            </div>
-                          `
-                        )
-                        .join("")
-                    : `
-                      <div class="text-sm text-outline">
-                        No major changes detected.
-                      </div>
-                    `
-                }
-              </div>
-            </div>
-
-            <button
-              id="close-tape-bottom"
-              class="w-full mt-6 rounded-lg bg-primary-container py-3 text-on-primary font-semibold"
-            >
-              Close Inspection
-            </button>
-
-          </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        modal.querySelector("#close-tape").onclick = () => {
-          modal.remove();
-        };
-
-        modal.querySelector("#close-tape-bottom").onclick = () => {
-          modal.remove();
-        };
-
-        modal.addEventListener("click", (event) => {
-          if (event.target === modal) {
-            modal.remove();
-          }
-        });
-      });
+    const symbol = card.getAttribute("data-symbol");
+    if (symbol) {
+      window.location.href = `/stock/${encodeURIComponent(symbol)}`;
     }
   });
 </script>
@@ -1976,6 +1773,32 @@
     }
   });
 })();
+</script>
+
+
+<script>
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+
+  // Do not hijack buttons, links, remove controls, or the existing Inspect Tape action.
+  if (target.closest("button, a, [data-remove-stock], [data-inspect-symbol]")) return;
+
+  const stock = target.closest(
+    "[data-symbol], [data-stock-symbol], [data-ticker], [data-symbol-card]"
+  );
+
+  if (!stock) return;
+
+  const symbol =
+    stock.getAttribute("data-symbol") ||
+    stock.getAttribute("data-stock-symbol") ||
+    stock.getAttribute("data-ticker");
+
+  if (!symbol) return;
+
+  window.location.href = `/stock/${encodeURIComponent(symbol.toUpperCase())}`;
+});
 </script>
 
 </body>
